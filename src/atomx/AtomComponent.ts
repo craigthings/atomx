@@ -4,7 +4,7 @@ import AtomSubscriber from "./AtomSubscriber";
 
 interface Props extends React.HTMLAttributes<any> {}
 
-export default class AtomComponent<T, K extends keyof Props> extends React.Component<Props> {
+export default class AtomComponent<T extends keyof Props> extends React.Component<Props> {
   private subscribedStates:Array<AtomSubscriber> = [];
 
   constructor(props:Props) {

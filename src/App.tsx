@@ -47,7 +47,7 @@ let store = new TodoStore();
 
 
 
-class App extends Atom.Component {
+class App extends Atom.Component<{}> {
   render() {
     let todos = store.todos.get();
     this.subscribe(store.todos);
