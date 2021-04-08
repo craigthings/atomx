@@ -1,6 +1,6 @@
 import AtomState from './AtomState';
 
-export class AtomUID extends AtomState {
+export class AtomUID extends AtomState<AtomUID> {
   constructor() {
     super();
     this.generate();
@@ -17,7 +17,7 @@ export class AtomUID extends AtomState {
   };
 }
 
-export class AtomBoolean extends AtomState {
+export class AtomBoolean extends AtomState<AtomBoolean> {
   constructor(val) {
     super(val);
   }
@@ -35,11 +35,11 @@ export class AtomBoolean extends AtomState {
   };
 
   toggle = () => {
-    set(!this.value);
+    this.set(!this.value);
   };
 }
 
-export class AtomString extends AtomState {
+export class AtomString extends AtomState<AtomString> {
   constructor(defaultValue) {
     super(defaultValue);
   }
@@ -53,7 +53,7 @@ export class AtomString extends AtomState {
   };
 }
 
-export class AtomNumber extends AtomState {
+export class AtomNumber extends AtomState<AtomNumber> {
   constructor(defaultValue) {
     super(defaultValue);
   }

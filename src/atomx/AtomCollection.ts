@@ -1,12 +1,13 @@
 import AtomState from './AtomState';
+import AtomSubscriber from './AtomSubscriber';
 import AtomStore from './AtomStore';
 import Events from './AtomEvents';
 import EventDispatcher from './EventDispatcher';
 
-export default class AtomCollection<T> extends AtomState<T> {
+export default class AtomCollection<T> extends AtomSubscriber {
   type:any;
   values: Array<T> = [];
-  private defaultValues = [];
+  private defaultValues: Array<T> = [];
   //private defaultArgs = [];
 
   constructor(values?:Array<T>, type?:T, ...args: any) {
@@ -18,16 +19,15 @@ export default class AtomCollection<T> extends AtomState<T> {
         this.values.push(value);
       }
     }
-    //this.defaultArgs = args;
   }
 
-  set = (values:Array<any>) => {
+  set = (values:Array<T>) => {
     values.forEach(value => {
       this.values.push(value);
     })
   }
 
-  get = () => {
+  get = ():Array<T> => {
     return [ ... this.values ];
   }
 
@@ -63,4 +63,3 @@ export default class AtomCollection<T> extends AtomState<T> {
     this.values = [ ... this.defaultValues ]
   }
 }
-

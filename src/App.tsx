@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import Atom from "./atomx";
 import { subscribe, state, computed, collection } from "./atomx";
+import AtomCollection from "./atomx/AtomCollection";
 
 class TodoItemStore extends Atom.Store {
   name = Atom.String("");
@@ -22,7 +23,7 @@ class TodoItemStore extends Atom.Store {
 }
 
 class TodoStore extends Atom.Store {
-    todos = collection([], TodoItemStore);
+    todos:AtomCollection<TodoItemStore> = collection();
     title = state("some title");
 
     constructor(){
@@ -44,6 +45,8 @@ class TodoStore extends Atom.Store {
 
 let store = new TodoStore();
 
+
+
 class App extends Atom.Component {
   render() {
     let todos = store.todos.get();
@@ -54,7 +57,7 @@ class App extends Atom.Component {
         <div className="todo-list">
           {todos.map((todo, index) => (
             <TodoItem
-              key={todo.id.get()}
+              key={String(todo.id.get())}
               todo={todo}
               removeTodo={store.removeTodo}
             />
@@ -66,7 +69,7 @@ class App extends Atom.Component {
   }
 }
 
-class TodoItem extends Atom.Component {
+class TodoItem extends Atom.Component<{todo: TodoItem}, {}> {
   componentWillUnmount = () => {
     this.unsubscribeAll();
   }

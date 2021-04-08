@@ -1,6 +1,6 @@
 
 enum Events {
-  CHANGE = "change",
+  CHANGED = "changed",
   ADDED = "added",
   REMOVED = "removed",
 };

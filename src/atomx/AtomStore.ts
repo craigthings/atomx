@@ -1,28 +1,17 @@
 import AtomState from './AtomState';
 import AtomComputed from './AtomComputed';
 import Events from './AtomEvents';
+import AtomSubscriber from './AtomSubscriber';
 
-export default class AtomStore extends AtomState {
-    private computed = [];
+export default class AtomStore extends AtomSubscriber {
+    private computed:Array<AtomComputed<any>> = [];
     private initialized = false;
     private functional = false;
-    private disabled = false;
-    allValues = [];
   
-    constructor(valueSet) {
+    constructor(stateValues?:Object) {
       super();
-      if (valueSet) this.init(valueSet);
+      if (stateValues) this.init(stateValues);
     }
-  
-    disable = () => {
-      this.disabled = true;
-    };
-  
-    enable = () => {
-      this.allValues.forEach(value => {
-  
-      });
-    };
 
     set = (values:any) => {
       for (let key in this) {
@@ -42,73 +31,69 @@ export default class AtomStore extends AtomState {
       }
     }
   
-    init = (valueSet) => {
+    init = (stateValues?:Object) => {
       if (this.initialized === true) return this;
-      if (!valueSet) {
-        for (let key in this) {
-          let value = this[key];
-          if (value instanceof AtomComputed) {
-            value.store = this;
-            this.computed.push(value);
-            value.init();
-          } else if (value instanceof AtomState) {
-            this[key] = value;
-            value.on(Events.CHANGE, this.updateStore);
-            // value.on(Events.CHANGE, this.updateComputed);
-          }
-        }
-      } else {
-        this.functional = true;
-        for (var key in valueSet) {
-          let value = valueSet[key];
-          if (value instanceof AtomComputed) {
-            value.store = this;
-            this[key] = value;
-            this.computed.push(value);
-            value.init();
-          } else if (value instanceof AtomState) {
-            this[key] = value;
-            value.on(Events.CHANGE, this.updateStore);
-            // value.on(Events.CHANGE, this.updateComputed);
-          }
+      if (stateValues) this.functional = true;
+      if(!stateValues) stateValues = this;
+
+      for (var key in stateValues) {
+        let state = stateValues[key];
+        if (state instanceof AtomComputed) {
+          state.setStore(this);
+          if(!stateValues) this[key] = state;
+          this.computed.push(state);
+          state.init();
+        } else if (state instanceof AtomState) {
+          this[key] = state;
+          state.on(Events.CHANGED, this.updateStore);
         }
       }
-      this.initialized = true;
-      return this;
     };
   
     updateStore = (value) => {
-      this.eventSubscribers.forEach((event) => {
-        if (event.name === Events.CHANGE) {
-          event.callback(this);
-        }
-      });
-      this.subscribers.forEach((sub) => {
-        sub.componentRef.forceUpdate();
-      });
-      if (this.functional) this.updateComputed(value);
-      // console.log(this.subscribers);
+      // this.eventSubscribers.forEach((event) => {
+      //   if (event.name === Events.CHANGED) {
+      //     event.callback(this);
+      //   }
+      // });
+      // this.subscribers.forEach((sub) => {
+      //   sub.componentRef.forceUpdate();
+      // });
+      if (this.functional) this.updateComputed();
       this.update();
     };
   
-    updateComputed = (value) => {
+    updateComputed = () => {
+      // TODO: check this against how computeds already subscribe themselves, and run themselves. is this better?
       this.computed.forEach((item) => {
         item.run(this);
       });
     };
   
-    on = (...args) => {
-      this.init(this);
+    on(eventName:string, handler:Function) {
+      // TODO: make all interactions init this instance to avoid needing to init? might be unexpected behavior.
+      // this.init(this);
       let keys = Object.keys(this);
       keys.forEach((key) => {
         let value = this[key];
         if (value instanceof AtomState) {
-          value.on(...args);
+          value.on(eventName, handler);
+        }
+      });
+    };
+
+    off(eventName:string, handler:Function) {
+      // this.init(this);
+      let keys = Object.keys(this);
+      keys.forEach((key) => {
+        let value = this[key];
+        if (value instanceof AtomState) {
+          value.off(eventName, handler);
         }
       });
     };
   
-    subscribe = (component) => {
+    subscribe = (renderFunction:Function) => {
       // this.init(this);
       let keys = Object.keys(this);
       keys.forEach((key) => {
@@ -117,8 +102,9 @@ export default class AtomStore extends AtomState {
           value instanceof AtomState &&
           value instanceof AtomComputed === false
         ) {
-          value.subscribe(component);
+          value.subscribe(renderFunction);
         }
       });
+      return this;
     };
   }
