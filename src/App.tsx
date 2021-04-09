@@ -5,9 +5,9 @@ import { subscribe, state, computed, collection } from "./atomx";
 import AtomCollection from "./atomx/AtomCollection";
 
 class TodoItemStore extends Atom.Store {
-  name = Atom.String("");
-  isCompleted = Atom.Boolean(false);
-  isEditing = Atom.Boolean(false);
+  name = state<string>("");
+  isCompleted = state<boolean>(false);
+  isEditing = state<boolean>(false);
   id = Atom.UID();
 
   constructor(name, isCompleted) {
@@ -23,21 +23,21 @@ class TodoItemStore extends Atom.Store {
 }
 
 class TodoStore extends Atom.Store {
-    todos:AtomCollection<TodoItemStore> = collection();
-    title = state("some title");
+  todos: AtomCollection<TodoItemStore> = collection();
+  title = state("some title");
 
-    constructor(){
-        super();
-        this.init();
-    }
+  constructor() {
+    super();
+    this.init();
+  }
 
-    addTodo = (name, completed = false) => {
-      this.todos.add(new TodoItemStore(name, completed));
-    };
-  
-    removeTodo = item => {
-      this.todos.remove(item);
-    };
+  addTodo = (name, completed = false) => {
+    this.todos.add(new TodoItemStore(name, completed));
+  };
+
+  removeTodo = item => {
+    this.todos.remove(item);
+  };
 }
 
 // =======================================================================================================
@@ -69,28 +69,32 @@ class App extends Atom.Component<{}> {
   }
 }
 
-class TodoItem extends Atom.Component<{todo: TodoItem}, {}> {
+class TodoItem extends Atom.Component<{
+  todo: TodoItemStore,
+  removeTodo: Function,
+}>{
   componentWillUnmount = () => {
     this.unsubscribeAll();
   }
 
   render() {
+    this.props.todo
     let todo = this.props.todo;
     let removeTodo = this.props.removeTodo;
     this.subscribe(todo);
 
     return (
       <div className="todo" style={{ textDecoration: todo.isCompleted.get() ? "line-through" : "" }}>
-          { todo.isEditing.get() ? 
-            <input
-              className="name-input"
-              value={todo.name.get()} 
-              onChange={ e => todo.name.set(e.target.value)}
-              onKeyPress= { e => e.key === 'Enter' ? todo.isEditing.set(false) : null }>
-            </input> 
-            :
-            <div className="name" onClick={e => todo.isEditing.set(true)}>{todo.name.get()}</div>
-          }
+        { todo.isEditing.get() ?
+          <input
+            className="name-input"
+            value={todo.name.get()}
+            onChange={e => todo.name.set(e.target.value)}
+            onKeyPress={e => e.key === 'Enter' ? todo.isEditing.set(false) : null}>
+          </input>
+          :
+          <div className="name" onClick={e => todo.isEditing.set(true)}>{todo.name.get()}</div>
+        }
         <div>
           <button onClick={todo.toggleCompleted}>Complete</button>
           <button onClick={() => removeTodo(todo)}>x</button>
@@ -100,8 +104,10 @@ class TodoItem extends Atom.Component<{todo: TodoItem}, {}> {
   }
 }
 
-class TodoForm extends Atom.Component {
-  name = Atom.String('');
+class TodoForm extends Atom.Component<{
+  addTodo:Function;
+}> {
+  name = state<string>('');
 
   handleSubmit = e => {
     e.preventDefault();

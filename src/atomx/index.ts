@@ -13,12 +13,14 @@ import {
   AtomNumber 
 } from './AtomStateTypes';
 
-export function state(...args) {
-  return new AtomState(...args);
+export function state<T>(...args) {
+  let newState:AtomState<T> = new AtomState(...args);
+  return newState;
 }
 
-export function collection(...args) {
-  return new AtomCollection(...args);
+export function collection<T>(...args) {
+  let newCollection:AtomCollection<T> = new AtomCollection(...args);
+  return newCollection;
 }
 
 export function store(newStore) {
@@ -55,12 +57,17 @@ export function computed(...args) {
   return new AtomComputed(...args);
 }
 
+// function newState<T>(value:T):AtomState<T>{
+//   let state:AtomState<T> = new AtomState(value);
+//   return state;
+// }
+
+// var a:newState<String> = newState('');
+
 export default {
   Store: AtomStore,
   Component: AtomComponent,
-  State: (...args) => {
-    return new AtomState(...args);
-  },
+  State: AtomState,
   UID: (...args) => {
     return new AtomUID(...args);
   },
