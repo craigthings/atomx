@@ -9,7 +9,7 @@ class Subscriber {
   }
 }
 
-export default class AtomState<T> extends AtomSubscriber {
+export default class AtomState<T = any> extends AtomSubscriber {
   value: T;
   private defaultValue: T;
 

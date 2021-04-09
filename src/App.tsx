@@ -1,16 +1,20 @@
 import React from "react";
 import "./App.css";
 import Atom from "./atomx";
-import { subscribe, state, computed, collection } from "./atomx";
-import AtomCollection from "./atomx/AtomCollection";
+import { uid, state, computed, collection } from "./atomx";
+// import AtomCollection from "./atomx/AtomCollection";
 
-class TodoItemStore extends Atom.Store {
+class TodoItem extends Atom.Store {
   name = state<string>("");
   isCompleted = state<boolean>(false);
   isEditing = state<boolean>(false);
-  id = Atom.UID();
+  status = computed<string>(this, ()=> {
+    if(this.isCompleted.get()) return 'done!';
+    else return 'not done.'
+  });
+  id = uid();
 
-  constructor(name, isCompleted) {
+  constructor(name:string, isCompleted:boolean) {
     super();
     this.name.set(name);
     this.isCompleted.set(isCompleted || false);
@@ -22,20 +26,20 @@ class TodoItemStore extends Atom.Store {
   }
 }
 
-class TodoStore extends Atom.Store {
-  todos: AtomCollection<TodoItemStore> = collection();
-  title = state("some title");
+class MainStore extends Atom.Store {
+  todos = collection<TodoItem>();
+  title = state<string>("some title");
 
   constructor() {
     super();
     this.init();
   }
 
-  addTodo = (name, completed = false) => {
-    this.todos.add(new TodoItemStore(name, completed));
+  addTodo = (name:string, completed = false) => {
+    this.todos.add(new TodoItem(name, completed));
   };
 
-  removeTodo = item => {
+  removeTodo = (item:TodoItem) => {
     this.todos.remove(item);
   };
 }
@@ -43,9 +47,7 @@ class TodoStore extends Atom.Store {
 // =======================================================================================================
 
 
-let store = new TodoStore();
-
-
+let store = new MainStore();
 
 class App extends Atom.Component<{}> {
   render() {
@@ -56,8 +58,8 @@ class App extends Atom.Component<{}> {
       <div className="app">
         <div className="todo-list">
           {todos.map((todo, index) => (
-            <TodoItem
-              key={String(todo.id.get())}
+            <TodoRow
+              key={todo.id.get()}
               todo={todo}
               removeTodo={store.removeTodo}
             />
@@ -69,8 +71,8 @@ class App extends Atom.Component<{}> {
   }
 }
 
-class TodoItem extends Atom.Component<{
-  todo: TodoItemStore,
+class TodoRow extends Atom.Component<{
+  todo: TodoItem,
   removeTodo: Function,
 }>{
   componentWillUnmount = () => {

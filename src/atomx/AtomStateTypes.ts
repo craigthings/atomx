@@ -1,6 +1,6 @@
 import AtomState from './AtomState';
 
-export class AtomUID extends AtomState<AtomUID> {
+export class AtomUID extends AtomState<string> {
   constructor() {
     super();
     this.generate();
@@ -10,19 +10,19 @@ export class AtomUID extends AtomState<AtomUID> {
     this.value = this.getUID();
   };
 
-  getUID = () => {
+  getUID = ():string => {
     return (
       Date.now().toString(36) + Math.random().toString(36).substr(2, 5)
     ).toLowerCase();
   };
 }
 
-export class AtomBoolean extends AtomState<AtomBoolean> {
-  constructor(val) {
+export class AtomBoolean extends AtomState<boolean> {
+  constructor(val:boolean) {
     super(val);
   }
 
-  set = (value) => {
+  set = (value:boolean) => {
     let type = typeof value;
     if (type !== "boolean")
       throw new Error(`AtomBoolean: Cannot set Boolean as ${type}.`);
@@ -39,12 +39,12 @@ export class AtomBoolean extends AtomState<AtomBoolean> {
   };
 }
 
-export class AtomString extends AtomState<AtomString> {
-  constructor(defaultValue) {
+export class AtomString extends AtomState<string> {
+  constructor(defaultValue:string) {
     super(defaultValue);
   }
 
-  set = (value) => {
+  set = (value:string) => {
     let type = typeof value;
     if (type !== "string")
       throw new Error(`AtomString: Cannot set String as ${type}.`);
@@ -53,12 +53,12 @@ export class AtomString extends AtomState<AtomString> {
   };
 }
 
-export class AtomNumber extends AtomState<AtomNumber> {
-  constructor(defaultValue) {
+export class AtomNumber extends AtomState<number> {
+  constructor(defaultValue:number) {
     super(defaultValue);
   }
 
-  set = (value) => {
+  set = (value:number) => {
     let type = typeof value;
     if (type !== "number")
       throw Error(`AtomNumber: Cannot set Number as ${type}.`);
