@@ -36,7 +36,9 @@ export function store(newStore) {
 }
 
 export function subscribe(atomValue) {
-  const api = {};
+  const api = {
+    forceUpdate: () => {};
+  };
   api.forceUpdate = React.useReducer(() => ({}))[1];
   atomValue.subscribe(api);
   return api;
