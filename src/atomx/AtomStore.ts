@@ -3,6 +3,8 @@ import AtomComputed from './AtomComputed';
 import Events from './AtomEvents';
 import AtomSubscriber from './AtomSubscriber';
 
+type Constructor<T> = { new (): T }
+
 export default class AtomStore extends AtomSubscriber {
     private computed:Array<AtomComputed<any>> = [];
     private initialized = false;
@@ -20,6 +22,18 @@ export default class AtomStore extends AtomSubscriber {
           value.set(values[key]);
         }
       }
+    }
+
+    get = () => {
+      // TODO: make this work with auto complete with some sort of typing setup.
+      let dataObject:any = {};
+      for (let key in this) {
+        let value:any = this[key];
+        if (value instanceof AtomState) {
+          dataObject[key] = value.get();
+        }
+      }
+      return dataObject;
     }
 
     reset = () => {

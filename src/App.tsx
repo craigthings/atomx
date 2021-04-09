@@ -9,8 +9,8 @@ class TodoItem extends Atom.Store {
   isCompleted = state<boolean>(false);
   isEditing = state<boolean>(false);
   status = computed<string>(this, ()=> {
-    if(this.isCompleted.get()) return 'done!';
-    else return 'not done.'
+    if(this.isCompleted.get()) return "done!";
+    else return "not done."
   });
   id = uid();
 
@@ -48,6 +48,7 @@ class MainStore extends Atom.Store {
 
 
 let store = new MainStore();
+window["store"] = store;
 
 class App extends Atom.Component {
   render() {
@@ -92,7 +93,7 @@ class TodoRow extends Atom.Component<{
             className="name-input"
             value={todo.name.get()}
             onChange={e => todo.name.set(e.target.value)}
-            onKeyPress={e => e.key === 'Enter' ? todo.isEditing.set(false) : null}>
+            onKeyPress={e => e.key === "Enter" ? todo.isEditing.set(false) : null}>
           </input>
           :
           <div className="name" onClick={e => todo.isEditing.set(true)}>{todo.name.get()}</div>
@@ -109,13 +110,13 @@ class TodoRow extends Atom.Component<{
 class TodoForm extends Atom.Component<{
   addTodo:Function;
 }> {
-  name = state<string>('');
+  name = state<string>("");
 
   handleSubmit = e => {
     e.preventDefault();
     if (!this.name) return;
     this.props.addTodo(this.name.get());
-    this.name.set('');
+    this.name.set("");
   };
 
   render() {
