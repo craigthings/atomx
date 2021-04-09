@@ -53,7 +53,7 @@ export default class AtomStore extends AtomSubscriber {
       for (var key in stateValues) {
         let state = stateValues[key];
         if (state instanceof AtomComputed) {
-          state.setStore(this);
+          state.setParent(this);
           if(!stateValues) this[key] = state;
           this.computed.push(state);
           state.init();

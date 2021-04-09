@@ -4,14 +4,14 @@ import AtomStore from './AtomStore';
 
 export default class AtomComputed<T> extends AtomState<T> {
   private func: Function = function () { };
-  private store: AtomStore;
+  private parent: any;
   private initialized: Boolean = false;
 
-  constructor(store: AtomStore, func: Function) {
+  constructor(parent: any, func: Function) {
     super();
     this.func = func;
-    this.store = store;
-    this.init();
+    this.parent = parent;
+    this.run();
   }
 
   init = () => {
@@ -28,18 +28,14 @@ export default class AtomComputed<T> extends AtomState<T> {
     // }
   };
 
-  setStore = (store) => {
-    this.store = store;
+  setParent = (parent:any) => {
+    this.parent = parent;
   }
 
-  run = (store?: AtomStore) => {
-    if (!store) store = this.store;
+  run = (parent?: any) => {
+    if (!parent) parent = this.parent;
 
-    let newValue = this.func(store);
+    let newValue = this.func(parent);
     if (newValue !== this.value) this.set(newValue);
   };
 }
-var store:AtomStore = new AtomStore();
-var a:AtomComputed<Boolean> = new AtomComputed(store, ():Boolean => {
-  return false;
-});

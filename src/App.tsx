@@ -8,7 +8,7 @@ class TodoItem extends Atom.Store {
   name = state<string>("");
   isCompleted = state<boolean>(false);
   isEditing = state<boolean>(false);
-  status = computed<string>(this, ()=> {
+  status = computed<string>(this, () => {
     if(this.isCompleted.get()) return "done!";
     else return "not done."
   });
