@@ -93,7 +93,7 @@ export default class AtomStore extends AtomSubscriber {
       });
     };
   
-    subscribe = (renderFunction:Function) => {
+    subscribe = (renderFunction:Function, scope:any) => {
       // this.init(this);
       let keys = Object.keys(this);
       keys.forEach((key) => {
@@ -102,7 +102,7 @@ export default class AtomStore extends AtomSubscriber {
           value instanceof AtomState &&
           value instanceof AtomComputed === false
         ) {
-          value.subscribe(renderFunction);
+          value.subscribe(renderFunction, scope);
         }
       });
       return this;

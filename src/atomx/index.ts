@@ -25,7 +25,8 @@ export function Subscriber<T extends Constructor>(Base: T) {
       super(...args);
 
       if(this["forceUpdate"]) this.renderFunc = this["forceUpdate"];
-      else if(this["render"]) this.renderFunc = this["render"];
+      else if(this["render"]) this.renderFunc = this["render"]
+      this.renderFunc.bind(this);
     }
   
     subscribe = (atomState:AtomSubscriber) => {
@@ -34,7 +35,7 @@ export function Subscriber<T extends Constructor>(Base: T) {
         this.subscribedStates.push(atomState);
       }
       let renderFunc:Function = () => {};
-      atomState.subscribe(renderFunc);
+      atomState.subscribe(renderFunc, this);
     };
   
     unsubscribe = (atomState:AtomSubscriber) => {
@@ -114,4 +115,6 @@ export default {
   Boolean: AtomBoolean,
   String: AtomString,
   Number: AtomNumber,
+  //Map: AtomMap, // TODO: map type
+  //Array: AtomArray, // TODO: array type
 };

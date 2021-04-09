@@ -49,7 +49,7 @@ class MainStore extends Atom.Store {
 
 let store = new MainStore();
 
-class App extends Atom.Component<{}> {
+class App extends Atom.Component {
   render() {
     let todos = store.todos.get();
     this.subscribe(store.todos);

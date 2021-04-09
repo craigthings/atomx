@@ -16,7 +16,7 @@ export default class AtomComponent<T = {}, K = {}> extends React.Component<T, K>
     if (exists === false) {
       this.subscribedStates.push(atomState);
     }
-    atomState.subscribe(this.forceUpdate);
+    atomState.subscribe(this.forceUpdate, this);
   };
 
   unsubscribe = (atomState: AtomSubscriber) => {

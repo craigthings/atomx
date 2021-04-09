@@ -16,16 +16,16 @@ export default class AtomComputed<T> extends AtomState<T> {
 
   init = () => {
     // TODO: check if this is necessary since store already fires RUN when and values there change.
-    this.initialized = true;
-    this.value = this.func(this.store);
-    for (let key in this.store) {
-      let value = this.store[key];
-      if (value instanceof AtomComputed) {
-        value.on(Events.CHANGED, this.run);
-      } else if (value instanceof AtomState) {
-        value.on(Events.CHANGED, this.run);
-      }
-    }
+    // this.initialized = true;
+    // this.value = this.func(this.store);
+    // for (let key in this.store) {
+    //   let value = this.store[key];
+    //   if (value instanceof AtomComputed) {
+    //     value.on(Events.CHANGED, this.run);
+    //   } else if (value instanceof AtomState) {
+    //     value.on(Events.CHANGED, this.run);
+    //   }
+    // }
   };
 
   setStore = (store) => {

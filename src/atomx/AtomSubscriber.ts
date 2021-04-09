@@ -3,9 +3,11 @@ import EventDispatcher from './EventDispatcher';
 
 class Subscriber {
   renderFunction: Function;
+  scope: any;
 
-  constructor(renderFunction: Function) {
+  constructor(renderFunction: Function, scope:any) {
     this.renderFunction = renderFunction;
+    this.scope = scope;
   }
 }
 
@@ -24,17 +26,17 @@ export default class AtomSubscriber extends EventDispatcher {
   update = (event?:Events) => {
     if(this.disabled === true) return;
     this.subscribers.forEach((subscriber) => {
-      subscriber.renderFunction();
+      subscriber.renderFunction.call(subscriber.scope);
     });
     if(event) this.dispatch(event, this);
     this.dispatch(Events.CHANGED, this);
   };
   
-  subscribe = (renderFunction: Function | any) => {
+  subscribe = (renderFunction: Function, scope:any) => {
     if (!renderFunction) throw new Error("AtomX Error: Render function missing.");
     let exists = this.subscribers.filter((subscriber) => subscriber.renderFunction === renderFunction).length > 0;
     if (exists === false) {
-      this.subscribers.push(new Subscriber(renderFunction));
+      this.subscribers.push(new Subscriber(renderFunction, scope));
     }
     return this;
   };
