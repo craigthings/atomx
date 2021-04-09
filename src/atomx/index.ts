@@ -1,5 +1,3 @@
-import React from 'react';
-
 import AtomCollection from './AtomCollection';
 import AtomComputed from './AtomComputed';
 import AtomStore from './AtomStore';
