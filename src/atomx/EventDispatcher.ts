@@ -30,6 +30,9 @@ export default class EventDispatcher {
         this.eventsList = events;
     };
 
+    addEventListener = this.on;
+    removeEventListener = this.off;
+
     dispatch(eventName:string, data?:any) {
         this.eventsList.forEach(e => {
             if (e.name === eventName) e.handler(data);
