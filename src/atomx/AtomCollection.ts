@@ -2,7 +2,6 @@ import AtomState from './AtomState';
 import AtomSubscriber from './AtomSubscriber';
 import AtomStore from './AtomStore';
 import Events from './AtomEvents';
-import EventDispatcher from './EventDispatcher';
 
 export default class AtomCollection<T> extends AtomSubscriber {
   type:any;
@@ -62,4 +61,7 @@ export default class AtomCollection<T> extends AtomSubscriber {
   reset = () => {
     this.values = [ ... this.defaultValues ]
   }
+
+  onAdded = (callback: Function) => { this.on(Events.ADDED, callback) }
+  onRemoved = (callback: Function) => { this.on(Events.REMOVED, callback) }
 }
