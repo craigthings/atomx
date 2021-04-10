@@ -8,7 +8,7 @@ class TodoItem extends Atom.Store {
   name = state<string>("");
   isCompleted = state<boolean>(false);
   isEditing = state<boolean>(false);
-  status = computed<string>(this, ()=> {
+  status = computed<string>(this, () => {
     if(this.isCompleted.get()) return "done!";
     else return "not done."
   });
@@ -72,32 +72,51 @@ class App extends Atom.Component {
   }
 }
 
-class TodoRow extends Atom.Component<{
+type Props = {
   todo: TodoItem,
   removeTodo: Function,
-}>{
+}
+
+class TodoRow extends Atom.Component<Props>{
+
+  constructor(props:Props){
+    super(props);
+    props.todo.status.subscribe((e:any)=>{
+      console.log(e.value);
+    })
+  }
+
   componentWillUnmount = () => {
     this.unsubscribeAll();
   }
 
   render() {
     this.props.todo
+    
     let todo = this.props.todo;
     let removeTodo = this.props.removeTodo;
+    
+    let { name, isCompleted, isEditing } = todo;
+    
     this.subscribe(todo);
 
     return (
-      <div className="todo" style={{ textDecoration: todo.isCompleted.get() ? "line-through" : "" }}>
-        { todo.isEditing.get() ?
+      <div className="todo" style={{ textDecoration: isCompleted.get() ? "line-through" : "" }}>
           <input
             className="name-input"
-            value={todo.name.get()}
-            onChange={e => todo.name.set(e.target.value)}
-            onKeyPress={e => e.key === "Enter" ? todo.isEditing.set(false) : null}>
+            style={{
+              border: isEditing.get() ? '': '0px',
+              outlineWidth: isEditing.get() ? '': '0px'
+            }}
+            value={name.get()}
+            readOnly={!isEditing.get()}
+            onMouseDown={e => { if(isEditing.get() === false) isEditing.set(true) }}
+            onKeyPress={e => e.key === "Enter" ? isEditing.set(false) : null}
+            onChange={e => { name.set(e.target.value); if(isEditing.get()===false) e.currentTarget.blur()}}
+            onSubmit={e => console.log('!')}
+            onBlur={e => isEditing.set(false)}
+            >
           </input>
-          :
-          <div className="name" onClick={e => todo.isEditing.set(true)}>{todo.name.get()}</div>
-        }
         <div>
           <button onClick={todo.toggleCompleted}>Complete</button>
           <button onClick={() => removeTodo(todo)}>x</button>

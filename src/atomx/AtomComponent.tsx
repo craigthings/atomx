@@ -1,6 +1,7 @@
 import React from "react";
 import AtomState from "./AtomState";
 import AtomSubscriber from "./AtomSubscriber";
+import { Platforms } from "./AtomSubscriber";
 
 // interface Props extends HTMLElement {}
 
@@ -16,7 +17,7 @@ export default class AtomComponent<T = {}, K = {}> extends React.Component<T, K>
     if (exists === false) {
       this.subscribedStates.push(atomState);
     }
-    atomState.subscribe(this.forceUpdate, this);
+    atomState.subscribe(this.forceUpdate, this, Platforms.React);
   };
 
   unsubscribe = (atomState: AtomSubscriber) => {

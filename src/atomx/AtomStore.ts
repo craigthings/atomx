@@ -2,6 +2,7 @@ import AtomState from './AtomState';
 import AtomComputed from './AtomComputed';
 import Events from './AtomEvents';
 import AtomSubscriber from './AtomSubscriber';
+import { Platforms } from './AtomSubscriber';
 
 type Constructor<T> = { new (): T }
 
@@ -53,7 +54,7 @@ export default class AtomStore extends AtomSubscriber {
       for (var key in stateValues) {
         let state = stateValues[key];
         if (state instanceof AtomComputed) {
-          state.setStore(this);
+          state.setParent(this);
           if(!stateValues) this[key] = state;
           this.computed.push(state);
           state.init();
@@ -73,7 +74,7 @@ export default class AtomStore extends AtomSubscriber {
       // this.subscribers.forEach((sub) => {
       //   sub.componentRef.forceUpdate();
       // });
-      if (this.functional) this.updateComputed();
+      // if(this.functional === false) this.updateComputed();
       this.update();
     };
   
@@ -107,7 +108,7 @@ export default class AtomStore extends AtomSubscriber {
       });
     };
   
-    subscribe = (renderFunction:Function, scope:any) => {
+    subscribe = (renderFunction:Function, scope:any, platform?:Platforms) => {
       // this.init(this);
       let keys = Object.keys(this);
       keys.forEach((key) => {
@@ -116,7 +117,7 @@ export default class AtomStore extends AtomSubscriber {
           value instanceof AtomState &&
           value instanceof AtomComputed === false
         ) {
-          value.subscribe(renderFunction, scope);
+          value.subscribe(renderFunction, scope, platform);
         }
       });
       return this;
