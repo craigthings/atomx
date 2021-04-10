@@ -1,1 +1,0 @@
-export const isClass = (fn) => /^\s*class/.test(fn.toString());

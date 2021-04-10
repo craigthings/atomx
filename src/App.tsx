@@ -9,12 +9,12 @@ class TodoItem extends Atom.Store {
   isCompleted = state<boolean>(false);
   isEditing = state<boolean>(false);
   status = computed<string>(this, () => {
-    if(this.isCompleted.get()) return "done!";
+    if (this.isCompleted.get()) return "done!";
     else return "not done."
   });
   id = uid();
 
-  constructor(name:string, isCompleted:boolean) {
+  constructor(name: string, isCompleted: boolean) {
     super();
     this.name.set(name);
     this.isCompleted.set(isCompleted || false);
@@ -35,11 +35,11 @@ class MainStore extends Atom.Store {
     this.init();
   }
 
-  addTodo = (name:string, completed = false) => {
+  addTodo = (name: string, completed = false) => {
     this.todos.add(new TodoItem(name, completed));
   };
 
-  removeTodo = (item:TodoItem) => {
+  removeTodo = (item: TodoItem) => {
     this.todos.remove(item);
   };
 }
@@ -79,9 +79,9 @@ type Props = {
 
 class TodoRow extends Atom.Component<Props>{
 
-  constructor(props:Props){
+  constructor(props: Props) {
     super(props);
-    props.todo.status.subscribe((e:any)=>{
+    props.todo.status.subscribe((e: any) => {
       console.log(e.value);
     })
   }
@@ -92,31 +92,30 @@ class TodoRow extends Atom.Component<Props>{
 
   render() {
     this.props.todo
-    
+
     let todo = this.props.todo;
     let removeTodo = this.props.removeTodo;
-    
+
     let { name, isCompleted, isEditing } = todo;
-    
+
     this.subscribe(todo);
 
     return (
       <div className="todo" style={{ textDecoration: isCompleted.get() ? "line-through" : "" }}>
-          <input
-            className="name-input"
-            style={{
-              border: isEditing.get() ? '': '0px',
-              outlineWidth: isEditing.get() ? '': '0px'
-            }}
-            value={name.get()}
-            readOnly={!isEditing.get()}
-            onMouseDown={e => { if(isEditing.get() === false) isEditing.set(true) }}
-            onKeyPress={e => e.key === "Enter" ? isEditing.set(false) : null}
-            onChange={e => { name.set(e.target.value); if(isEditing.get()===false) e.currentTarget.blur()}}
-            onSubmit={e => console.log('!')}
-            onBlur={e => isEditing.set(false)}
-            >
-          </input>
+        <input
+          className="name-input"
+          style={{
+            border: isEditing.get() ? '' : '0px',
+            outlineWidth: isEditing.get() ? '' : '0px'
+          }}
+          value={name.get()}
+          readOnly={!isEditing.get()}
+          onMouseDown={e => { if (isEditing.get() === false) isEditing.set(true) }}
+          onKeyPress={e => e.key === "Enter" ? isEditing.set(false) : null}
+          onChange={e => { name.set(e.target.value); if (isEditing.get() === false) e.currentTarget.blur() }}
+          onBlur={e => isEditing.set(false)}
+        >
+        </input>
         <div>
           <button onClick={todo.toggleCompleted}>Complete</button>
           <button onClick={() => removeTodo(todo)}>x</button>
@@ -127,7 +126,7 @@ class TodoRow extends Atom.Component<Props>{
 }
 
 class TodoForm extends Atom.Component<{
-  addTodo:Function;
+  addTodo: Function;
 }> {
   name = state<string>("");
 
