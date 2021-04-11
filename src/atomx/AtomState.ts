@@ -23,15 +23,17 @@ export default class AtomState<T = any> extends AtomSubscriber {
     return this.value;
   };
 
-  set = (value: T) => {
-    if (this.value === value) return;
+  set = (value: T):AtomState => {
+    if (this.value === value) return this;
     this.value = value;
     this.update();
     this.dispatch(Events.CHANGED);
+    return this;
   };
 
   reset = () => {
     this.set(this.defaultValue);
+    return this;
   }
 
   onChange = (callback: Function) => { this.on(Events.CHANGED, callback) }

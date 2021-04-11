@@ -1,8 +1,6 @@
-import React from "react";
-import "./App.css";
-import Atom from "./atomx";
-import { uid, state, computed, collection } from "./atomx";
-// import AtomCollection from "./atomx/AtomCollection";
+import "./Todo.css";
+import Atom from "../atomx";
+import { uid, state, computed, collection } from "../atomx";
 
 class TodoItem extends Atom.Store {
   name = state<string>("");
@@ -50,13 +48,13 @@ class MainStore extends Atom.Store {
 let store = new MainStore();
 window["store"] = store;
 
-class App extends Atom.Component {
+class TodoExample extends Atom.Component {
   render() {
     let todos = store.todos.get();
     this.subscribe(store.todos);
 
     return (
-      <div className="app">
+      <div className="todo-example">
         <div className="todo-list">
           {todos.map((todo, index) => (
             <TodoRow
@@ -78,10 +76,14 @@ type Props = {
 }
 
 class TodoRow extends Atom.Component<Props>{
+  status = this.props.todo.status;
 
   constructor(props: Props) {
     super(props);
-    props.todo.status.subscribe((e: any) => {
+  }
+
+  componentDidMount = () => {
+    this.status.subscribe((e: any) => {
       console.log(e.value);
     })
   }
@@ -91,8 +93,6 @@ class TodoRow extends Atom.Component<Props>{
   }
 
   render() {
-    this.props.todo
-
     let todo = this.props.todo;
     let removeTodo = this.props.removeTodo;
 
@@ -103,7 +103,7 @@ class TodoRow extends Atom.Component<Props>{
     return (
       <div className="todo" style={{ textDecoration: isCompleted.get() ? "line-through" : "" }}>
         <input
-          className="name-input"
+          className={"name-input" + isEditing.get() ? 'editing' : ''}
           style={{
             border: isEditing.get() ? '' : '0px',
             outlineWidth: isEditing.get() ? '' : '0px'
@@ -140,7 +140,7 @@ class TodoForm extends Atom.Component<{
   render() {
     this.subscribe(this.name);
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form className="todo-form" onSubmit={this.handleSubmit}>
         <input
           type="text"
           className="input"
@@ -152,4 +152,4 @@ class TodoForm extends Atom.Component<{
   }
 }
 
-export default App;
+export default TodoExample;

@@ -28,6 +28,7 @@ export class AtomBoolean extends AtomState<boolean> {
       throw new Error(`AtomBoolean: Cannot set Boolean as ${type}.`);
     this.value = Boolean(value);
     this.update();
+    return this;
   };
 
   get = () => {
@@ -50,6 +51,7 @@ export class AtomString extends AtomState<string> {
       throw new Error(`AtomString: Cannot set String as ${type}.`);
     this.value = String(value);
     this.update();
+    return this;
   };
 }
 
@@ -64,5 +66,6 @@ export class AtomNumber extends AtomState<number> {
       throw Error(`AtomNumber: Cannot set Number as ${type}.`);
     this.value = Number(value);
     this.update();
+    return this;
   };
 }

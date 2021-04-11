@@ -34,8 +34,12 @@ export default class AtomSubscriber extends EventDispatcher {
     if(this.disabled === true) return;
     this.subscribers.forEach((subscriber) => {
       let isReactRender = subscriber.platform === Platforms.React;
-      if(isReactRender) subscriber.renderFunction.call(subscriber.scope);
-      else subscriber.renderFunction.call(subscriber.scope, this);
+      if(isReactRender) {
+        if(subscriber.scope.context) subscriber.renderFunction.call(subscriber.scope);
+      }
+      else {
+        subscriber.renderFunction.call(subscriber.scope, this);
+      }
     });
     if(event) this.dispatch(event, this);
     this.dispatch(Events.CHANGED, this);

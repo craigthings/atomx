@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import Todo from './examples/Todo';
+import Counter from './examples/Counter';
 // import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Todo />
+    <Counter />
   </React.StrictMode>,
   document.getElementById('root')
 );

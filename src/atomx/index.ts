@@ -16,34 +16,34 @@ type Constructor = new (...args: any[]) => {}
 
 export function Subscriber<T extends Constructor>(Base: T) {
   return class extends Base {
-    private subscribedStates:Array<AtomSubscriber> = [];
-    private renderFunc:Function = () => {}
+    _subscribedStates:Array<AtomSubscriber> = [];
+    _renderFunc:Function = () => {}
 
     constructor(...args: any[]){
       super(...args);
 
-      if(this["forceUpdate"]) this.renderFunc = this["forceUpdate"];
-      else if(this["render"]) this.renderFunc = this["render"]
-      this.renderFunc.bind(this);
+      if(this["forceUpdate"]) this._renderFunc = this["forceUpdate"];
+      else if(this["render"]) this._renderFunc = this["render"]
+      this._renderFunc.bind(this);
     }
   
     subscribe = (atomState:AtomSubscriber) => {
-      let exists = this.subscribedStates.filter((item) => item === atomState).length > 0;
+      let exists = this._subscribedStates.filter((item) => item === atomState).length > 0;
       if (exists === false) {
-        this.subscribedStates.push(atomState);
+        this._subscribedStates.push(atomState);
       }
       let renderFunc:Function = () => {};
       atomState.subscribe(renderFunc, this);
     };
   
     unsubscribe = (atomState:AtomSubscriber) => {
-      this.subscribedStates
+      this._subscribedStates
         .filter((subscribedAtomState) => subscribedAtomState === atomState)
-        .forEach((subscribedAtomState) => subscribedAtomState.unsubscribe(this.renderFunc));
+        .forEach((subscribedAtomState) => subscribedAtomState.unsubscribe(this._renderFunc));
     };
   
     unsubscribeAll = () => {
-      this.subscribedStates.forEach((subscribedAtomState) => subscribedAtomState.unsubscribe(this.renderFunc));
+      this._subscribedStates.forEach((subscribedAtomState) => subscribedAtomState.unsubscribe(this._renderFunc));
     };
   }
 }

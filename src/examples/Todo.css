@@ -1,0 +1,52 @@
+.todo-example {
+  padding: 10px;
+}
+
+*:focus{
+  outline: 0px;
+}
+
+.todo-list {
+  background: #e8e8e8;
+  border-radius: 4px;
+  max-width: 400px;
+  padding: 5px;
+}
+
+.todo-list input {
+  width: calc(100% - 8px);
+}
+
+.todo .name, .todo .name-input {
+  width: 72%;
+}
+
+.todo-form {
+  margin-top: -2px;
+}
+
+.todo-form .input {
+  border: 1px solid #777;
+  border-radius: 2px;
+}
+
+.todo {
+  width: 384px;
+  align-items: center;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0px 1px 2px rgb(0 0 0 / 15%);
+  display: flex;
+  font-size: 12px;
+  justify-content: space-between;
+  margin-left: 2px;
+  margin-top: 2px;
+  margin-bottom: 6px;
+  padding: 3px 4px 3px 7px;
+}
+
+.todo div {
+  display: flex;
+  width: 133px;
+  justify-content: space-between;
+}
