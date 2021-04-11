@@ -1,5 +1,6 @@
 import "./Counter.css";
 import Atom from "../atomx";
+import AtomComponent from "../atomx-react/AtomComponent";
 import { state } from "../atomx";
 
 class MainStore extends Atom.Store {
@@ -15,7 +16,7 @@ class MainStore extends Atom.Store {
 
 let store = new MainStore();
 
-class CountExample extends Atom.Component {
+class CountExample extends AtomComponent {
   
   incrementIfOdd() {
     if (store.count.get() % 2 !== 0) {

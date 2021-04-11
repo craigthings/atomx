@@ -1,54 +1,10 @@
 import "./Todo.css";
-import Atom from "../atomx";
-import { uid, state, computed, collection } from "../atomx";
+import AtomComponent from "../atomx-react/AtomComponent";
+import store from './TodoStore';
+import { state } from '../atomx';
+import { TodoItem } from './TodoStore'
 
-class TodoItem extends Atom.Store {
-  name = state<string>("");
-  isCompleted = state<boolean>(false);
-  isEditing = state<boolean>(false);
-  status = computed<string>(this, () => {
-    if (this.isCompleted.get()) return "done!";
-    else return "not done."
-  });
-  id = uid();
-
-  constructor(name: string, isCompleted: boolean) {
-    super();
-    this.name.set(name);
-    this.isCompleted.set(isCompleted || false);
-    this.init();
-  }
-
-  toggleCompleted = () => {
-    this.isCompleted.set(!this.isCompleted.get());
-  }
-}
-
-class MainStore extends Atom.Store {
-  todos = collection<TodoItem>();
-  title = state<string>("some title");
-
-  constructor() {
-    super();
-    this.init();
-  }
-
-  addTodo = (name: string, completed = false) => {
-    this.todos.add(new TodoItem(name, completed));
-  };
-
-  removeTodo = (item: TodoItem) => {
-    this.todos.remove(item);
-  };
-}
-
-// =======================================================================================================
-
-
-let store = new MainStore();
-window["store"] = store;
-
-class TodoExample extends Atom.Component {
+class TodoExample extends AtomComponent {
   render() {
     let todos = store.todos.get();
     this.subscribe(store.todos);
@@ -57,10 +13,10 @@ class TodoExample extends Atom.Component {
       <div className="todo-example">
         <div className="todo-list">
           {todos.map((todo, index) => (
-            <TodoRow
-              key={todo.id.get()}
-              todo={todo}
-              removeTodo={store.removeTodo}
+            <TodoRow 
+              key={todo.id.get()} 
+              todo={todo} 
+              removeTodo={store.removeTodo} 
             />
           ))}
           <TodoForm addTodo={store.addTodo} />
@@ -70,22 +26,11 @@ class TodoExample extends Atom.Component {
   }
 }
 
-type Props = {
-  todo: TodoItem,
-  removeTodo: Function,
-}
-
-class TodoRow extends Atom.Component<Props>{
+class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
   status = this.props.todo.status;
 
-  constructor(props: Props) {
-    super(props);
-  }
-
   componentDidMount = () => {
-    this.status.subscribe((e: any) => {
-      console.log(e.value);
-    })
+    this.status.subscribe((e: any) => console.log(e.value))
   }
 
   componentWillUnmount = () => {
@@ -101,12 +46,13 @@ class TodoRow extends Atom.Component<Props>{
     this.subscribe(todo);
 
     return (
-      <div className="todo" style={{ textDecoration: isCompleted.get() ? "line-through" : "" }}>
+      <div className="todo">
         <input
           className={"name-input" + isEditing.get() ? 'editing' : ''}
           style={{
             border: isEditing.get() ? '' : '0px',
-            outlineWidth: isEditing.get() ? '' : '0px'
+            outlineWidth: isEditing.get() ? '' : '0px',
+            textDecoration: isCompleted.get() ? "line-through" : "",
           }}
           value={name.get()}
           readOnly={!isEditing.get()}
@@ -125,7 +71,7 @@ class TodoRow extends Atom.Component<Props>{
   }
 }
 
-class TodoForm extends Atom.Component<{
+class TodoForm extends AtomComponent<{
   addTodo: Function;
 }> {
   name = state<string>("");

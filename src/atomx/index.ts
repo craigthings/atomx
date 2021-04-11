@@ -2,7 +2,6 @@ import AtomCollection from './AtomCollection';
 import AtomComputed from './AtomComputed';
 import AtomStore from './AtomStore';
 import AtomState from './AtomState';
-import AtomComponent from './AtomComponent';
 import AtomSubscriber from './AtomSubscriber';
 
 import {
@@ -105,7 +104,7 @@ export function store(newStore) {
 
 export default {
   Store: AtomStore,
-  Component: AtomComponent,
+  // Component: AtomComponent,
   State: AtomState,
   UID: AtomUID,
   Computed: AtomComputed,

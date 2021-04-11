@@ -1,7 +1,7 @@
 import React from "react";
-import AtomState from "./AtomState";
-import AtomSubscriber from "./AtomSubscriber";
-import { Platforms } from "./AtomSubscriber";
+import AtomState from "../atomx/AtomState";
+import AtomSubscriber from "../atomx/AtomSubscriber";
+import { Platforms } from "../atomx/AtomSubscriber";
 
 // interface Props extends HTMLElement {}
 
