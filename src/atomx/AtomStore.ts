@@ -63,12 +63,10 @@ export default class AtomStore extends AtomSubscriber {
     };
   
     updateStore = (value) => {
-      console.log('update store');
       this.update();
     };
   
     updateComputed = () => {
-      console.log('update comp')
       // TODO: check this against how computeds already subscribe themselves, and run themselves. is this better?
       // this.computed.forEach((item) => {
       //   item.run(this);
@@ -104,8 +102,8 @@ export default class AtomStore extends AtomSubscriber {
       keys.forEach((key) => {
         let value = this[key];
         if (
-          value instanceof AtomState &&
-          value instanceof AtomComputed === false
+          value instanceof AtomState ||
+          value instanceof AtomCollection
         ) {
           value.subscribe(renderFunction, scope, platform);
         }

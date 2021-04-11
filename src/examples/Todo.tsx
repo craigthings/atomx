@@ -7,8 +7,8 @@ import { TodoItem } from './TodoStore'
 class TodoExample extends AtomComponent {
   render() {
     let todos = store.filtered.get();
-    this.subscribe(store.filtered);
-    console.log('render');
+    this.subscribe(store);
+
     return (
       <div className="todo-example">
         <div className="todo-list">
@@ -29,10 +29,10 @@ class TodoExample extends AtomComponent {
 window['store'] = store;
 
 class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
-  // status = this.props.todo.status;
+  status = this.props.todo.status;
 
   componentDidMount = () => {
-    // this.status.subscribe((e: any) => console.log(e.value))
+    this.status.subscribe((e: any) => console.log(e.value))
   }
 
   componentWillUnmount = () => {

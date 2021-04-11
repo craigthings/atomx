@@ -22,7 +22,6 @@ export default class AtomComputed<T> extends AtomState<T> {
     this.value = this.func(this.parent);
     for (let key in this.parent) {
       let value = this.parent[key];
-      console.log('INIT key', key, value instanceof AtomSubscriber);
       if (value instanceof AtomComputed) {
         value.on(Events.CHANGED, this.run);
       } else if (value instanceof AtomSubscriber) {
@@ -39,7 +38,6 @@ export default class AtomComputed<T> extends AtomState<T> {
     if (!parent) parent = this.parent;
     
     let newValue = this.func(parent);
-    console.log('RUN', newValue);
     if (newValue !== this.value) this.set(newValue);
   };
 }
