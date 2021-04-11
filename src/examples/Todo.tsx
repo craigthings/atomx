@@ -1,13 +1,17 @@
 import "./Todo.css";
 import AtomComponent from "../atomx-react/AtomComponent";
-import store from './TodoStore';
+import store, { TodoStatus } from './TodoStore';
 import { state } from '../atomx';
 import { TodoItem } from './TodoStore'
 
 class TodoExample extends AtomComponent {
+  componentDidMount = () => {
+    this.subscribe(store);
+  }
+  
   render() {
     let todos = store.filtered.get();
-    this.subscribe(store);
+    
 
     return (
       <div className="todo-example">
@@ -20,6 +24,9 @@ class TodoExample extends AtomComponent {
             />
           ))}
           <TodoForm addTodo={store.addTodo} />
+          <button disabled={store.filter.get() === TodoStatus.NONE} onClick={e => store.filter.set(TodoStatus.NONE)}>All</button>
+          <button disabled={store.filter.get() === TodoStatus.ACTIVE} onClick={e => store.filter.set(TodoStatus.ACTIVE)}>Active</button>
+          <button disabled={store.filter.get() === TodoStatus.COMPLETED} onClick={e => store.filter.set(TodoStatus.COMPLETED)}>Completed</button>
         </div>
       </div>
     );
@@ -29,14 +36,14 @@ class TodoExample extends AtomComponent {
 window['store'] = store;
 
 class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
-  status = this.props.todo.status;
+  // status = this.props.todo.status;
 
   componentDidMount = () => {
-    this.status.subscribe((e: any) => console.log(e.value))
+    // this.status.subscribe((e: any) => console.log(e.value))
   }
 
   componentWillUnmount = () => {
-    this.unsubscribeAll();
+    this.unsubscribe(this.props.todo);
   }
 
   render() {
