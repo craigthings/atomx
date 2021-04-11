@@ -36,14 +36,8 @@ class TodoExample extends AtomComponent {
 window['store'] = store;
 
 class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
-  // status = this.props.todo.status;
-
-  componentDidMount = () => {
-    // this.status.subscribe((e: any) => console.log(e.value))
-  }
-
   componentWillUnmount = () => {
-    this.unsubscribe(this.props.todo);
+    this.unsubscribeAll();
   }
 
   render() {
