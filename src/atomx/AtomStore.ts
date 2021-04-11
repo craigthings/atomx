@@ -3,6 +3,7 @@ import AtomComputed from './AtomComputed';
 import Events from './AtomEvents';
 import AtomSubscriber from './AtomSubscriber';
 import { Platforms } from './AtomSubscriber';
+import AtomCollection from './AtomCollection';
 
 type Constructor<T> = { new (): T }
 
@@ -53,19 +54,24 @@ export default class AtomStore extends AtomSubscriber {
 
       for (var key in stateValues) {
         let state = stateValues[key];
-        if (state instanceof AtomComputed) {
-          state.setParent(this);
-          if(!stateValues) this[key] = state;
-          this.computed.push(state);
-          state.init();
-        } else if (state instanceof AtomState) {
-          this[key] = state;
+        // if (state instanceof AtomComputed) {
+          // state.setParent(this);
+          // if(!stateValues) this[key] = state;
+          // this.computed.push(state);
+          // state.init();
+        // } else if (
+          // state instanceof AtomState || 
+          // state instanceof AtomCollection ||
+          // state instanceof AtomComputed) {
+            // this[key] = state;
+        if( state instanceof AtomSubscriber) {
           state.on(Events.CHANGED, this.updateStore);
         }
       }
     };
   
     updateStore = (value) => {
+      console.log('update store');
       // this.eventSubscribers.forEach((event) => {
       //   if (event.name === Events.CHANGED) {
       //     event.callback(this);
@@ -74,15 +80,16 @@ export default class AtomStore extends AtomSubscriber {
       // this.subscribers.forEach((sub) => {
       //   sub.componentRef.forceUpdate();
       // });
-      // if(this.functional === false) this.updateComputed();
+      // this.updateComputed();
       this.update();
     };
   
     updateComputed = () => {
+      console.log('update comp')
       // TODO: check this against how computeds already subscribe themselves, and run themselves. is this better?
-      this.computed.forEach((item) => {
-        item.run(this);
-      });
+      // this.computed.forEach((item) => {
+      //   item.run(this);
+      // });
     };
   
     on(eventName:string, handler:Function) {

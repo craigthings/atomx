@@ -5,10 +5,10 @@ export class TodoItem extends Atom.Store {
     name = state<string>("");
     isCompleted = state<boolean>(false);
     isEditing = state<boolean>(false);
-    status = computed<string>(this, () => {
-      if (this.isCompleted.get()) return "done!";
-      else return "not done."
-    });
+    // status = computed<TodoStatus>(this, () => {
+    //   if (this.isCompleted.get()) return TodoStatus.COMPLETED;
+    //   else return TodoStatus.ACTIVE
+    // });
     id = uid();
   
     constructor(name: string, isCompleted: boolean) {
@@ -22,9 +22,21 @@ export class TodoItem extends Atom.Store {
       this.isCompleted.set(!this.isCompleted.get());
     }
   }
+
+  export enum TodoStatus {
+    NONE = 'none',
+    COMPLETED = 'completed',
+    ACTIVE = 'active'
+  }
   
   class MainStore extends Atom.Store {
     todos = collection<TodoItem>();
+    filter = state<TodoStatus>(TodoStatus.NONE);
+    filtered = computed<Array<TodoItem>>(this, ()=> {
+      if(this.filter.get() === TodoStatus.NONE) return this.todos.get();
+      if(this.filter.get() === TodoStatus.COMPLETED) return this.todos.get().filter( todo => todo.isCompleted.get() === true );
+      if(this.filter.get() === TodoStatus.ACTIVE) return this.todos.get().filter( todo => todo.isCompleted.get() === false);        
+    })
     title = state<string>("some title");
   
     constructor() {
