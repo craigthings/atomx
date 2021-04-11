@@ -8,9 +8,9 @@ import AtomCollection from './AtomCollection';
 type Constructor<T> = { new (): T }
 
 export default class AtomStore extends AtomSubscriber {
-    private computed:Array<AtomComputed<any>> = [];
-    private initialized = false;
-    private functional = false;
+  private initialized = false;
+    // private computed:Array<AtomComputed<any>> = [];
+    // private functional = false;
   
     constructor(stateValues?:Object) {
       super();
@@ -49,38 +49,21 @@ export default class AtomStore extends AtomSubscriber {
   
     init = (stateValues?:Object) => {
       if (this.initialized === true) return this;
-      if (stateValues) this.functional = true;
+      // if (stateValues) this.functional = true;
       if(!stateValues) stateValues = this;
 
       for (var key in stateValues) {
         let state = stateValues[key];
-        // if (state instanceof AtomComputed) {
-          // state.setParent(this);
-          // if(!stateValues) this[key] = state;
-          // this.computed.push(state);
-          // state.init();
-        // } else if (
-          // state instanceof AtomState || 
-          // state instanceof AtomCollection ||
-          // state instanceof AtomComputed) {
-            // this[key] = state;
+        // if(this.functional) this[key] = state;
         if( state instanceof AtomSubscriber) {
           state.on(Events.CHANGED, this.updateStore);
         }
       }
+      return this;
     };
   
     updateStore = (value) => {
       console.log('update store');
-      // this.eventSubscribers.forEach((event) => {
-      //   if (event.name === Events.CHANGED) {
-      //     event.callback(this);
-      //   }
-      // });
-      // this.subscribers.forEach((sub) => {
-      //   sub.componentRef.forceUpdate();
-      // });
-      // this.updateComputed();
       this.update();
     };
   
