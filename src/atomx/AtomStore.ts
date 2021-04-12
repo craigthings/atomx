@@ -110,4 +110,19 @@ export default class AtomStore extends AtomSubscriber {
       });
       return this;
     };
+
+    unsubscribe = (renderFunction:Function) => {
+      // this.init(this);
+      let keys = Object.keys(this);
+      keys.forEach((key) => {
+        let value = this[key];
+        if (
+          value instanceof AtomState ||
+          value instanceof AtomCollection
+        ) {
+          value.unsubscribe(renderFunction);
+        }
+      });
+      return this;
+    };
   }

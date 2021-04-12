@@ -1,4 +1,6 @@
+import AtomCollection from './AtomCollection';
 import Events from './AtomEvents';
+import AtomStore from './AtomStore';
 import AtomSubscriber from './AtomSubscriber';
 
 class Subscriber {
@@ -11,7 +13,9 @@ class Subscriber {
 
 export default class AtomState<T = any> extends AtomSubscriber {
   value: T;
+  _parent: any = null;
   private defaultValue: T;
+  // TODO: need to properly set _parent type
 
   constructor(defaultValue?:any) {
     super();
@@ -34,6 +38,10 @@ export default class AtomState<T = any> extends AtomSubscriber {
   reset = () => {
     this.set(this.defaultValue);
     return this;
+  }
+
+  _setParent = (parent: AtomStore | AtomCollection<T>) => {
+    this._parent = parent;
   }
 
   onChange = (callback: Function) => { this.on(Events.CHANGED, callback) }

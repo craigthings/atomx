@@ -33,28 +33,36 @@ export default class AtomCollection<T> extends AtomSubscriber {
   get length():number {
     return this.values.length;
   }
-
-  add = (value: T) => {
+  // TODO: add option to disable tracking changes on children
+  add = (value: T | any) => {
     if (this.type && value instanceof this.type === false) {
       throw new Error(
         `AtomX: AtomCollection: Cannot set ${this.type.name} as ${typeof value}.`
       );
     }
 
+    value.on(Events.CHANGED, this.handleChildUpdate);
+
     this.values.push(value);
     this.update(Events.ADDED);
   };
+  // TODO: this should return the whole store, not just the individual state that was changed.
+  handleChildUpdate = (e:T | any) => {
+    this.dispatch(Events.CHANGED, e);
+    console.log('!!!', e);
+  }
 
   new = (value: AtomStore | AtomState<T>) => {
     this.values.push(new this.type(value))
   }
 
-  remove = (value:T) => {
+  remove = (value:T | any) => {
     for (let i = 0; i < this.length; i++) {
       if (this.values[i] === value) {
         this.values.splice(i, 1);
       }
     }
+    value.off(Events.CHANGED, this.handleChildUpdate);
     this.update(Events.REMOVED);
   };
 

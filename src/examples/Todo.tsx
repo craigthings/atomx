@@ -12,7 +12,6 @@ class TodoExample extends AtomComponent {
   render() {
     let todos = store.filtered.get();
     
-
     return (
       <div className="todo-example">
         <div className="todo-list">
@@ -36,6 +35,7 @@ class TodoExample extends AtomComponent {
 window['store'] = store;
 
 class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
+
   componentWillUnmount = () => {
     this.unsubscribeAll();
   }
@@ -44,9 +44,9 @@ class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
     let todo = this.props.todo;
     let removeTodo = this.props.removeTodo;
 
-    let { name, isCompleted, isEditing } = todo;
-
     this.subscribe(todo);
+
+    let { name, isCompleted, isEditing } = todo;
 
     return (
       <div className="todo">
@@ -66,7 +66,7 @@ class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
         >
         </input>
         <div>
-          <button onClick={todo.toggleCompleted}>Complete</button>
+          <button onClick={() => todo.toggleCompleted()}>Complete</button>
           <button onClick={() => removeTodo(todo)}>x</button>
         </div>
       </div>
