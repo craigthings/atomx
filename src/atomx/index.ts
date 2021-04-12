@@ -2,7 +2,7 @@ import AtomCollection from './AtomCollection';
 import AtomComputed from './AtomComputed';
 import AtomStore from './AtomStore';
 import AtomState from './AtomState';
-import AtomSubscriber from './AtomSubscriber';
+import AtomSubscriber, { Platforms } from './AtomSubscriber';
 
 import {
   AtomUID,
@@ -14,15 +14,19 @@ import {
 type Constructor = new (...args: any[]) => {}
 
 export function Subscriber<T extends Constructor>(Base: T) {
-  return class extends Base {
+  return class Subscribing extends Base {
     _subscribedStates:Array<AtomSubscriber> = [];
-    _renderFunc:Function = () => {}
+    _renderFunc:Function = ()=>{}
+    _platform:Platforms = Platforms.None;
 
     constructor(...args: any[]){
       super(...args);
 
-      if(this["forceUpdate"]) this._renderFunc = this["forceUpdate"];
-      else if(this["render"]) this._renderFunc = this["render"]
+      if(this["forceUpdate"]) {
+        this._renderFunc = this["forceUpdate"];
+        this._platform = Platforms.React;
+      }
+      else if(this["render"]) this._renderFunc = this["render"];
       this._renderFunc.bind(this);
     }
   
@@ -31,8 +35,7 @@ export function Subscriber<T extends Constructor>(Base: T) {
       if (exists === false) {
         this._subscribedStates.push(atomState);
       }
-      let renderFunc:Function = () => {};
-      atomState.subscribe(renderFunc, this);
+      atomState.subscribe(this._renderFunc, this, this._platform);
     };
   
     unsubscribe = (atomState:AtomSubscriber) => {

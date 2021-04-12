@@ -12,7 +12,6 @@ export default class EventDispatcher {
     eventsList:Array<Event> = [];
 
     on(eventName:string, handler:Function) {
-        console.log('on', eventName, handler);
         for (let i in this.eventsList) {
             let event = this.eventsList[i];
             if (event.name === eventName && event.handler === handler) return;
