@@ -17,6 +17,22 @@ export default class AtomStore extends AtomSubscriber {
       if (stateValues) this.init(stateValues);
     }
 
+    init = (stateValues?:Object) => {
+      if (this.initialized === true) return this;
+      // if (stateValues) this.functional = true;
+      if(!stateValues) stateValues = this;
+
+      for (var key in stateValues) {
+        let state = stateValues[key];
+        // if(this.functional) this[key] = state;
+        if( state instanceof AtomSubscriber) {
+          state.setParent(this);
+          state.on(Events.CHANGED, this.updateStore);
+        }
+      }
+      return this;
+    };
+
     set = (values:any) => {
       for (let key in this) {
         let value = this[key];
@@ -46,23 +62,7 @@ export default class AtomStore extends AtomSubscriber {
         }
       }
     }
-  
-    init = (stateValues?:Object) => {
-      if (this.initialized === true) return this;
-      // if (stateValues) this.functional = true;
-      if(!stateValues) stateValues = this;
 
-      for (var key in stateValues) {
-        let state = stateValues[key];
-        // if(this.functional) this[key] = state;
-        if( state instanceof AtomSubscriber) {
-          state.setParent(this);
-          state.on(Events.CHANGED, this.updateStore);
-        }
-      }
-      return this;
-    };
-  
     updateStore = (value) => {
       this.update();
     };

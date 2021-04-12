@@ -19,6 +19,15 @@ import { state, Subscriber } from "../atomx";
 
 class CountExample extends Subscriber(React.Component) {
   count = state<number>(0);
+  // state = {
+  //   count: 0
+  // }
+
+  // componentDidMount = () => {
+  //   this.count.subscribe( state => {
+  //     this.setState({count:state.get()})
+  //   });
+  // }
 
   increment = () => {
     this.count.set(this.count.get() + 1);
@@ -39,7 +48,7 @@ class CountExample extends Subscriber(React.Component) {
 
   render() {
     this.subscribe(this.count);
-    
+
     return (
       <div className="counter-example">
         <p>
