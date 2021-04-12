@@ -56,6 +56,7 @@ export default class AtomStore extends AtomSubscriber {
         let state = stateValues[key];
         // if(this.functional) this[key] = state;
         if( state instanceof AtomSubscriber) {
+          state.setParent(this);
           state.on(Events.CHANGED, this.updateStore);
         }
       }

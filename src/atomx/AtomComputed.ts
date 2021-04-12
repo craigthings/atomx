@@ -5,7 +5,6 @@ import AtomSubscriber from './AtomSubscriber';
 
 export default class AtomComputed<T> extends AtomState<T> {
   private func: Function = function () { };
-  private parent: any;
   private initialized: Boolean = false;
 
   constructor(parent: any, func: Function) {

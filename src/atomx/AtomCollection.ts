@@ -42,6 +42,7 @@ export default class AtomCollection<T> extends AtomSubscriber {
     }
 
     value.on(Events.CHANGED, this.handleChildUpdate);
+    value.parent = this;
 
     this.values.push(value);
     this.update(Events.ADDED);
@@ -49,7 +50,6 @@ export default class AtomCollection<T> extends AtomSubscriber {
   // TODO: this should return the whole store, not just the individual state that was changed.
   handleChildUpdate = (e:T | any) => {
     this.dispatch(Events.CHANGED, e);
-    console.log('!!!', e);
   }
 
   new = (value: AtomStore | AtomState<T>) => {
