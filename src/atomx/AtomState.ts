@@ -1,4 +1,6 @@
+import AtomCollection from './AtomCollection';
 import Events from './AtomEvents';
+import AtomStore from './AtomStore';
 import AtomSubscriber from './AtomSubscriber';
 
 class Subscriber {

@@ -12,6 +12,7 @@ export default class EventDispatcher {
     eventsList:Array<Event> = [];
 
     on(eventName:string, handler:Function) {
+        console.log('on', eventName, handler);
         for (let i in this.eventsList) {
             let event = this.eventsList[i];
             if (event.name === eventName && event.handler === handler) return;
@@ -24,7 +25,15 @@ export default class EventDispatcher {
 
         for (var i = this.eventsList.length; i >= 0; i--) {
             var event = this.eventsList[i];
-            if (event.name === eventName && event.handler === handler) events.splice(i, 1);
+            // TODO: find why sometimes there are undefined events
+            if(!event) {
+                events.splice(i, 1);
+                continue;
+            }
+            if (event.name === eventName && event.handler === handler) {
+                events.splice(i, 1);
+                continue;
+            } 
         }
 
         this.eventsList = events;

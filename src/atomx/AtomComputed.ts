@@ -1,10 +1,10 @@
 import AtomState from './AtomState';
 import Events from './AtomEvents';
 import AtomStore from './AtomStore';
+import AtomSubscriber from './AtomSubscriber';
 
 export default class AtomComputed<T> extends AtomState<T> {
   private func: Function = function () { };
-  private parent: any;
   private initialized: Boolean = false;
 
   constructor(parent: any, func: Function) {
@@ -12,6 +12,7 @@ export default class AtomComputed<T> extends AtomState<T> {
     this.func = func;
     this.parent = parent;
     this.init();
+    this.run();
   }
 
   init = () => {
@@ -22,7 +23,7 @@ export default class AtomComputed<T> extends AtomState<T> {
       let value = this.parent[key];
       if (value instanceof AtomComputed) {
         value.on(Events.CHANGED, this.run);
-      } else if (value instanceof AtomState) {
+      } else if (value instanceof AtomSubscriber) {
         value.on(Events.CHANGED, this.run);
       }
     }
@@ -34,7 +35,7 @@ export default class AtomComputed<T> extends AtomState<T> {
 
   run = (parent?: any) => {
     if (!parent) parent = this.parent;
-
+    
     let newValue = this.func(parent);
     if (newValue !== this.value) this.set(newValue);
   };

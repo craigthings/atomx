@@ -1,4 +1,6 @@
+import AtomCollection from './AtomCollection';
 import Events from './AtomEvents';
+import AtomStore from './AtomStore';
 import EventDispatcher from './EventDispatcher';
 
 export enum Platforms {
@@ -20,6 +22,8 @@ class Subscriber {
 
 export default class AtomSubscriber extends EventDispatcher {
   subscribers: Array<Subscriber> = [];
+  parent:any = null;
+  // TODO: need to properly set _parent type
   private disabled:Boolean = false;
 
   disable = () => {
@@ -59,4 +63,8 @@ export default class AtomSubscriber extends EventDispatcher {
     let renderFunctionIndex = this.subscribers.findIndex((subscriber) => subscriber.renderFunction === renderFunction);
     this.subscribers.splice(renderFunctionIndex, 1);
   };
+  // TODO: see if there's a way to handle typing better on setparent
+  setParent = (parent: any) => {
+    this.parent = parent;
+  }
 }

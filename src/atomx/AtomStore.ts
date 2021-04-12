@@ -3,13 +3,14 @@ import AtomComputed from './AtomComputed';
 import Events from './AtomEvents';
 import AtomSubscriber from './AtomSubscriber';
 import { Platforms } from './AtomSubscriber';
+import AtomCollection from './AtomCollection';
 
 type Constructor<T> = { new (): T }
 
 export default class AtomStore extends AtomSubscriber {
-    private computed:Array<AtomComputed<any>> = [];
-    private initialized = false;
-    private functional = false;
+  private initialized = false;
+    // private computed:Array<AtomComputed<any>> = [];
+    // private functional = false;
   
     constructor(stateValues?:Object) {
       super();
@@ -48,41 +49,29 @@ export default class AtomStore extends AtomSubscriber {
   
     init = (stateValues?:Object) => {
       if (this.initialized === true) return this;
-      if (stateValues) this.functional = true;
+      // if (stateValues) this.functional = true;
       if(!stateValues) stateValues = this;
 
       for (var key in stateValues) {
         let state = stateValues[key];
-        if (state instanceof AtomComputed) {
+        // if(this.functional) this[key] = state;
+        if( state instanceof AtomSubscriber) {
           state.setParent(this);
-          if(!stateValues) this[key] = state;
-          this.computed.push(state);
-          state.init();
-        } else if (state instanceof AtomState) {
-          this[key] = state;
           state.on(Events.CHANGED, this.updateStore);
         }
       }
+      return this;
     };
   
     updateStore = (value) => {
-      // this.eventSubscribers.forEach((event) => {
-      //   if (event.name === Events.CHANGED) {
-      //     event.callback(this);
-      //   }
-      // });
-      // this.subscribers.forEach((sub) => {
-      //   sub.componentRef.forceUpdate();
-      // });
-      // if(this.functional === false) this.updateComputed();
       this.update();
     };
   
     updateComputed = () => {
       // TODO: check this against how computeds already subscribe themselves, and run themselves. is this better?
-      this.computed.forEach((item) => {
-        item.run(this);
-      });
+      // this.computed.forEach((item) => {
+      //   item.run(this);
+      // });
     };
   
     on(eventName:string, handler:Function) {
@@ -114,10 +103,25 @@ export default class AtomStore extends AtomSubscriber {
       keys.forEach((key) => {
         let value = this[key];
         if (
-          value instanceof AtomState &&
-          value instanceof AtomComputed === false
+          value instanceof AtomState ||
+          value instanceof AtomCollection
         ) {
           value.subscribe(renderFunction, scope, platform);
+        }
+      });
+      return this;
+    };
+
+    unsubscribe = (renderFunction:Function) => {
+      // this.init(this);
+      let keys = Object.keys(this);
+      keys.forEach((key) => {
+        let value = this[key];
+        if (
+          value instanceof AtomState ||
+          value instanceof AtomCollection
+        ) {
+          value.unsubscribe(renderFunction);
         }
       });
       return this;

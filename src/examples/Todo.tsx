@@ -1,14 +1,17 @@
 import "./Todo.css";
 import AtomComponent from "../atomx-react/AtomComponent";
-import store from './TodoStore';
+import store, { TodoStatus } from './TodoStore';
 import { state } from '../atomx';
 import { TodoItem } from './TodoStore'
 
 class TodoExample extends AtomComponent {
+  componentDidMount = () => {
+    this.subscribe(store);
+  }
+  
   render() {
-    let todos = store.todos.get();
-    this.subscribe(store.todos);
-
+    let todos = store.filtered.get();
+    
     return (
       <div className="todo-example">
         <div className="todo-list">
@@ -20,18 +23,18 @@ class TodoExample extends AtomComponent {
             />
           ))}
           <TodoForm addTodo={store.addTodo} />
+          <button disabled={store.filter.get() === TodoStatus.NONE} onClick={e => store.filter.set(TodoStatus.NONE)}>All</button>
+          <button disabled={store.filter.get() === TodoStatus.ACTIVE} onClick={e => store.filter.set(TodoStatus.ACTIVE)}>Active</button>
+          <button disabled={store.filter.get() === TodoStatus.COMPLETED} onClick={e => store.filter.set(TodoStatus.COMPLETED)}>Completed</button>
         </div>
       </div>
     );
   }
 }
 
-class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
-  status = this.props.todo.status;
+window['store'] = store;
 
-  componentDidMount = () => {
-    this.status.subscribe((e: any) => console.log(e.value))
-  }
+class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
 
   componentWillUnmount = () => {
     this.unsubscribeAll();
@@ -41,9 +44,9 @@ class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
     let todo = this.props.todo;
     let removeTodo = this.props.removeTodo;
 
-    let { name, isCompleted, isEditing } = todo;
-
     this.subscribe(todo);
+
+    let { name, isCompleted, isEditing } = todo;
 
     return (
       <div className="todo">
@@ -63,7 +66,7 @@ class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
         >
         </input>
         <div>
-          <button onClick={todo.toggleCompleted}>Complete</button>
+          <button onClick={() => todo.toggleCompleted()}>Complete</button>
           <button onClick={() => removeTodo(todo)}>x</button>
         </div>
       </div>
