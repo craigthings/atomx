@@ -39,8 +39,7 @@ class CountExample extends Subscriber(React.Component) {
 
   render() {
     this.subscribe(this.count);
-    this.subscribe
-
+    
     return (
       <div className="counter-example">
         <p>
