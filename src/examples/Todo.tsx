@@ -23,9 +23,9 @@ class TodoExample extends AtomComponent {
             />
           ))}
           <TodoForm addTodo={store.addTodo} />
-          <button disabled={store.filter.get() === TodoStatus.NONE} onClick={e => store.filter.set(TodoStatus.NONE)}>All</button>
-          <button disabled={store.filter.get() === TodoStatus.ACTIVE} onClick={e => store.filter.set(TodoStatus.ACTIVE)}>Active</button>
-          <button disabled={store.filter.get() === TodoStatus.COMPLETED} onClick={e => store.filter.set(TodoStatus.COMPLETED)}>Completed</button>
+          <button disabled={store.filter.get() === TodoStatus.NONE}       onClick={e => store.filter.set(TodoStatus.NONE)}>All</button>
+          <button disabled={store.filter.get() === TodoStatus.ACTIVE}     onClick={e => store.filter.set(TodoStatus.ACTIVE)}>Active</button>
+          <button disabled={store.filter.get() === TodoStatus.COMPLETED}  onClick={e => store.filter.set(TodoStatus.COMPLETED)}>Completed</button>
         </div>
       </div>
     );
