@@ -1,11 +1,14 @@
 import AtomState from './AtomState';
 import AtomComputed from './AtomComputed';
-import Events from './AtomEvents';
 import AtomSubscriber from './AtomSubscriber';
 import { Platforms } from './AtomSubscriber';
 import AtomCollection from './AtomCollection';
 
 type Constructor<T> = { new (): T }
+
+export enum Events {
+  CHANGED = "changed"
+};
 
 export default class AtomStore extends AtomSubscriber {
   private initialized = false;
