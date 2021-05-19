@@ -376,15 +376,12 @@ Dispatch an event from your collection.
 
 ```javascript
 test('counter', t => {
-  let counter = new CounterStore();
-  t.assert(CounterStore.count.get() === 0)
+  let store = new CounterStore();
+  t.assert(store.count.get() === 0);
 
-  increment()
-  t.assert(CounterStore.count.get() === 1)
+  increment();
+  t.assert(store.count.get() === 1);
 
-  decrement()
-  t.assert(CounterStore.count.get() === 0)
-
-  t.end()
+  t.end();
 })
 ```
