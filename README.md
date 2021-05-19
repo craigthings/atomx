@@ -46,10 +46,9 @@ class CountExample extends Subscriber(React.Component) { // extend our component
 ### Global State:
 
 ```javascript
-import Atom from "atomx-state";
-import { state } from "atomx-state";
+import { Store, state } from "atomx-state";
 
-class CounterStore extends Atom.Store {
+class CounterStore extends Store {
   count = state(0);
   
   constructor() {
@@ -60,15 +59,12 @@ class CounterStore extends Atom.Store {
   increment = () => {
     this.count.set(this.count.get() + 1);
   }
-  decrement = () => {
-    this.count.set(this.count.get() - 1);
-  }
 }
 ```
 
 ## Using Functions ❗ **NOT YET AVAILABLE** ❗
 
-### Local State:
+### Component State:
 
 ```jsx
 import { state, subscribe } from "atomx-state-react";
@@ -93,9 +89,8 @@ function CountExample { // extend our component to support subscribing to atomic
 ```
 
 ### Global State:
-
 ```jsx
-import { Store, subscribe } from "atomx-state-react";
+import { Store } from "atomx-state";
 
 export default Store(store => ({
   count: state(0),
@@ -103,6 +98,20 @@ export default Store(store => ({
     store.count.set(store.count.get() + 1);
   }
 }));
+```
+
+Alternative method:
+
+```jsx
+import { Store } from "atomx-state";
+
+let count = state(0);
+
+function increment(){
+  count.set(count.get() +)
+}
+
+export default Store({count})
 
 ```
 
@@ -119,11 +128,11 @@ export default Store(store => ({
 
 # API
 
-## Atomx Store
+## 🔒 Atomx Store
 
 A store contains multiple atomic states and actions on that state. It is also an event dispatcher.
 
-The references below assume this global state matches the example found above.
+The examples below assume this global state matches the example found above.
 
 ### `Store.get()`
 
@@ -139,6 +148,18 @@ Transforms all state within the store into a flat object.
 Store.set({
   count: Store.count.get() + 1
 });
+```
+Set state using and object with matching state names.
+
+### `Store.subscribe(callback: Function)`
+
+```javascript
+Store.subscribe(storeChangeHandler);
+
+function storeChangeHandler(storeReference){
+  console.log('Store changed!')
+}
+
 ```
 Set state using and object with matching state names.
 
@@ -167,14 +188,6 @@ Store.off(StoreEvents.CHANGED, changeHandler);)
 ```
 Remove an event listener to your store.
 
-
-### `Store.off(eventName: string, handlerFunction: Function)`
-
-```javascript
-Store.off(StoreEvents.CHANGED, changeHandler);)
-```
-Remove an event listener to your store.
-
 ### `Store.dispatch(eventName: string, payload: any)`
 
 ```javascript
@@ -186,19 +199,184 @@ UserStore.on('LOGIN_SUCCESSFUL', userLoginHandler);
 ```
 Dispatch an event from your store.
 
+## ⚛ Atomx State 
+
+"State" is an piece of atomic state. It can be `get`, `set`, `subscribed` to, listened (using `on` or `off`) to, and dispatched from. Sometimes you need your app to react to a specific event, and not just change based on what state you've subscribed to.
+
+### `State.get()`
+
+```javascript
+count.get(); // 0
+```
+
+Transforms all state within the store into a flat object.
+
+### `State.set(state: Object)`
+
+```javascript
+Store.set();
+```
+Set state using and object with matching state names.
+
+### `State.reset()`
+
+```javascript
+count.reset();
+```
+Resets all state found within the store to their original values.
+
+### `State.on(eventName: string, payload: any)`
+
+```javascript
+count.on(StoreEvents.CHANGED, changeHandler);
+
+function changeHandler(storeReferece){
+    console.log('Store changed!')
+}
+```
+Add an event listener to your state. Only event currently dispatched is `StoreEvents.CHANGED` when any atomic state is changed.
+
+### `State.off(eventName: string, handlerFunction: Function)`
+
+```javascript
+count.off(StateEvents.CHANGED, changeHandler);
+```
+Remove an event listener to your state.
 
 
+### `State.dispatch(eventName: string, payload: any)`
+
+```javascript
+count.dispatch('INCREMENT', count.get());
+
+// Somewhere else in your app
+
+count.on('INCREMENT', countIncrementHandler);
+```
+Dispatch an event from your state.
+
+## 📚 Atomx Collection
+
+A `collection` is similar to a store is instead a list of states that can be retrieved, added and removed.
+
+Example:
+
+```javascript
+import { Store, state } from "atomx-state";
+
+class Counter extends Store {
+  count = state(0);
+  
+  constructor(initialValue) {
+    super();
+    if(initialValue) count.set(initialValue);
+    this.init(); // initialize this store
+  }
+
+  increment = () => {
+    this.count.set(this.count.get() + 1);
+  }
+}
+
+export class MainStore extends Store {
+  counters = collection();
+
+  constructor() {
+    super();
+    this.init(); // initialize this store
+  }
+
+  addCounter = () => {
+    let i = 10;
+    while(i--) {
+      this.counters.add(new Counter(i));
+    }
+  };
+
+  incrementAll = () => {
+    this.counters.get().forEach(counter => counter.increment());
+  }
+}
+```
+
+The examples below assume this global state matches the example found above.
+
+### `Collection.get()`
+
+```javascript
+collection.get(); // { count: 0 };
+```
+
+Transforms all state within the store into a flat object.
+
+### `Collection.set(state: Object)`
+
+```javascript
+collection.set({
+  count: collection.count.get() + 1
+});
+```
+Set state using and object with matching state names.
+
+### `Collection.subscribe(callback: Function)`
+
+```javascript
+collection.subscribe(storeChangeHandler);
+
+function storeChangeHandler(storeReference){
+  console.log('Store changed!')
+}
+
+```
+Set state using and object with matching state names.
+
+### `Collection.reset()`
+
+```javascript
+collection.reset();
+```
+Resets all state found within the store to their original values.
+
+### `Collection.on(eventName: string, payload: any)`
+
+```javascript
+collection.on(StoreEvents.ADDED, addHandler);
+
+function addHandler(collectionReferece){
+    console.log('Item added!')
+}
+```
+Add an event listener to your store. Available `collection events` to dispatch are: 
+
+*`CollectionEvents.CHANGED`*
+
+*`CollectionEvents.ADDED`*
+
+*`CollectionEvents.REMOVED`*
+
+### `Collection.off(eventName: string, handlerFunction: Function)`
+
+```javascript
+collection.off(StoreEvents.ADDED, addHandler);
+```
+Remove an event listener to your store.
+
+### `Collection.dispatch(eventName: string, payload: any)`
+
+```javascript
+collection.dispatch('LOAD_COMPLETE', loadHandler);
+
+// Somewhere else in your app
+
+collection.on('LOAD_COMPLETE', loadHandler);
+```
+Dispatch an event from your collection.
 
 ## Testing
 
-Testing using [tape](https://github.com/substack/tape):
-
 ```javascript
-import * as test from 'tape'
-import { CounterStore } from './CounterStore'
-
 test('counter', t => {
-  CounterStore.reset()
+  let counter = new CounterStore();
   t.assert(CounterStore.count.get() === 0)
 
   increment()

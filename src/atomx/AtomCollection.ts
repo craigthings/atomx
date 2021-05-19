@@ -1,7 +1,12 @@
 import AtomState from './AtomState';
 import AtomSubscriber from './AtomSubscriber';
 import AtomStore from './AtomStore';
-import Events from './AtomEvents';
+
+export enum Events {
+  CHANGED = "changed",
+  ADDED = "added",
+  REMOVED = "removed",
+};
 
 export default class AtomCollection<T> extends AtomSubscriber {
   type:any;

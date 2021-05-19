@@ -1,7 +1,10 @@
 import AtomState from './AtomState';
-import Events from './AtomEvents';
 import AtomStore from './AtomStore';
 import AtomSubscriber from './AtomSubscriber';
+
+export enum Events {
+  CHANGED = "changed"
+};
 
 export default class AtomComputed<T> extends AtomState<T> {
   private func: Function = function () { };

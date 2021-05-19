@@ -1,7 +1,10 @@
 import AtomCollection from './AtomCollection';
-import Events from './AtomEvents';
 import AtomStore from './AtomStore';
 import AtomSubscriber from './AtomSubscriber';
+
+export enum Events {
+  CHANGED = "changed"
+};
 
 class Subscriber {
   renderFunction: Function;
