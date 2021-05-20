@@ -4,7 +4,7 @@
 
 State management is a problem that's relatively easy to solve with simple, and early stage web apps. But as apps grow in complexity, often state can start to behave unpredictably, or start becoming extremely verbose and hard to manage. Atomx is designed to be as straight forward as possible, while keeping state predictable and (more importantly) scalable. AtomX is designed to support  JavaScript and TypeScript using code structure that's intended to be familiar and IDE friendly.
 
-AtomX is built on a principle that all state should be "atomic". To put it another way, all values are a single bit of state. Strings, numbers, or any other data. AtomX state can be created and managed within any context. Use a global store, or use state within a component.
+AtomX is built on a principle that all state should be "atomic". To put it another way, all values are a single bit of state. Strings, numbers, or any other data. AtomX state can be created (and subscribed to) in any scope. Use a global store, or use state within a component.
 
 ## Installing
 
@@ -67,20 +67,22 @@ class CounterStore extends Store {
 ### Component State:
 
 ```jsx
-import { state, subscribe } from "atomx-state-react";
+import { state } from "atomx-state";
+import { subscribe } from "atomx-state-react";
 
 let count = state(0); // create initial atomic state.
+let label = state('My Counter');
 
 function CountExample { // extend our component to support subscribing to atomic state.
   
   
   let increment = () => count.set(count.get() + 1); // action to add 1 to state.
-  subscribe(count); // subscribe to the state so our component renders when the value is changed via .set()
+  subscribe(count, label); // subscribe to the state so our component renders when the value is changed via .set()
 
   render() {
     return (
         <p>
-          Clicked: {count.get()} times.
+          {label.get()} Clicked: {count.get()} times.
           <button onClick={this.increment}>+</button>
         </p>
     );
@@ -88,19 +90,19 @@ function CountExample { // extend our component to support subscribing to atomic
 }
 ```
 
-### Global State:
+<!-- ### Global State:
 ```jsx
-import { Store } from "atomx-state";
+import { makeStore } from "atomx-state";
 
-export default Store(store => ({
+export default makeStore(store => ({
   count: state(0),
   increment() {
     store.count.set(store.count.get() + 1);
   }
 }));
-```
+``` -->
 
-Alternative method:
+<!-- Alternative method:
 
 ```jsx
 import { Store } from "atomx-state";
@@ -111,7 +113,7 @@ function increment(){
   count.set(count.get() +)
 }
 
-export default Store({count})
+export default Store({count}) -->
 
 ```
 
@@ -165,7 +167,7 @@ Sets the value of the state.
 ```javascript
 count.reset();
 ```
-Resets the value in the state.
+Resets the value in the state to the initial value, even if the original value is undefined.
 
 ### `State.on(eventName: string, payload: any)`
 
@@ -271,7 +273,7 @@ Dispatch an event from your store.
 
 ## 📚 Atomx Collection
 
-A `collection` is similar to a store is instead a list of states that can be retrieved, added and removed.
+A `collection` stores a list of states. State can be added, removed, retrieved, and changed.
 
 Example:
 
@@ -322,7 +324,7 @@ export class MainStore extends Store {
 count = collection();
 
 // TypeScript
-count = collection<TodoItem>();
+count = collection<TodoStore>();
 ```
 Create a new instance of a collection;
 
@@ -332,33 +334,33 @@ Create a new instance of a collection;
 collection.get(); // [ counter1, counter2, counter3, ...];
 ```
 
-Transforms all state within the store into a flat object.
+Returns all state within the collection as an array.
 
 ### `Collection.set(state: Object)`
 
 ```javascript
-collection.set();
+collection.set([counter1, counter2, counter3]);
 ```
-Set state using and object with matching state names.
+Replaces the collection with a new array of values.
 
 ### `Collection.subscribe(callback: Function)`
 
 ```javascript
 collection.subscribe(storeChangeHandler);
 
-function storeChangeHandler(storeReference){
+function collectionChangeHandler(collectionReference){
   console.log('Store changed!')
 }
 
 ```
-Set state using and object with matching state names.
+Subscribe a handler to the collection that will be called when an item is added, removed, or changed.
 
 ### `Collection.reset()`
 
 ```javascript
 collection.reset();
 ```
-Resets all state found within the store to their original values.
+Resets the collection to it's inital state, even if that's empty.
 
 ### `Collection.on(eventName: string, payload: any)`
 

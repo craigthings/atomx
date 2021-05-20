@@ -3,6 +3,7 @@ import AtomComputed from './AtomComputed';
 import AtomStore from './AtomStore';
 import AtomState from './AtomState';
 import AtomSubscriber, { Platforms } from './AtomSubscriber';
+import React from 'react';
 
 import {
   AtomUID,
@@ -84,25 +85,35 @@ export function store(newStore) {
 
 // TODO: find a way to make these functional component enabled features to work.
 
-// export function subscribe(atomValue) {
-//   const api = {
-//     forceUpdate: () => {}
-//   };
-//   api.forceUpdate = React.useReducer(() => ({}))[1];
-//   atomValue.subscribe(api);
-//   return api;
-// }
+export function subscribe(target: any) {
+  if(Array.isArray(target)) {
+    target.forEach(state => subscribeSingle(state))
+  } else if (target.subscribe){
+    subscribeSingle(target);
+  }
+  
+  return target;
+}
 
-// export function withAtomX() {
-//   const api = {
-//     forceUpdate: () => {},
-//     subscribe: (atomValue) => {},
-//   };
-//   api.forceUpdate = React.useReducer(() => ({}))[1];
-//   api.subscribe = function (atomValue) {
-//     atomValue.subscribe(api);
-//   };
-//   return api;
+function subscribeSingle(target: any){
+  const [state, setState] = React.useState(Math.random())
+
+  function updateState() {
+    setState(Math.random())
+  }
+
+  React.useEffect(() => {
+    target.subscribe(updateState)
+    return () => target.unsubscribe(updateState)
+  });
+}
+
+// export function useState<T = any>(value:any) { //TODO: Find a way to store state in useState scope
+//   let state = new AtomState<T>(value);
+//   // @ts-ignore
+//   let functionalRender = React.useReducer(() => ({}))[1];
+//   state.subscribe(functionalRender);
+//   return state;
 // }
 
 export default {
