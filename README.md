@@ -62,13 +62,12 @@ class CounterStore extends Store {
 }
 ```
 
-## Using Functions ❗ **NOT YET AVAILABLE** ❗
+## Using Functional Components
 
 ### Component State:
 
 ```jsx
-import { state } from "atomx-state";
-import { subscribe } from "atomx-state-react";
+import { state, subscribe } from "atomx-state";
 
 let count = state(0); // create initial atomic state.
 let label = state('My Counter');

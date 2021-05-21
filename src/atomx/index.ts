@@ -112,6 +112,17 @@ function subscribeSingle(target: any){
 //   return state;
 // }
 
+export const Store = AtomStore;
+export const State = AtomState;
+export const Computed = AtomComputed;
+export const Collection = AtomCollection;
+export const Types = {
+  UID: AtomUID,
+  Boolean: AtomBoolean,
+  String: AtomString,
+  Number: AtomNumber
+}
+
 export default {
   Store: AtomStore,
   // Component: AtomComponent,
