@@ -85,27 +85,23 @@ export function store(newStore) {
 
 // TODO: find a way to make these functional component enabled features to work.
 
-export function subscribe(target: any) {
-  if(Array.isArray(target)) {
-    target.forEach(state => subscribeSingle(state))
-  } else if (target.subscribe){
-    subscribeSingle(target);
-  }
-  
-  return target;
-}
-
-function subscribeSingle(target: any){
+export function subscribe(...args) {
   const [state, setState] = React.useState(Math.random())
 
   function updateState() {
     setState(Math.random())
   }
-
+  
   React.useEffect(() => {
-    target.subscribe(updateState)
-    return () => target.unsubscribe(updateState)
+    args.forEach(state => state.subscribe(updateState))
+    return () => args.forEach(state => state.unsubscribe(updateState))
   });
+
+  return args;
+}
+
+function subscribeSingle(target: any){
+  
 }
 
 // export function useState<T = any>(value:any) { //TODO: Find a way to store state in useState scope

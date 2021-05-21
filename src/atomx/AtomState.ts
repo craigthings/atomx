@@ -1,6 +1,12 @@
 import AtomCollection from './AtomCollection';
 import AtomStore from './AtomStore';
 import AtomSubscriber from './AtomSubscriber';
+import {
+  AtomUID,
+  AtomBoolean,
+  AtomString,
+  AtomNumber
+} from './AtomStateTypes';
 
 export enum Events {
   CHANGED = "changed"

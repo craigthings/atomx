@@ -37,7 +37,6 @@ export default class AtomSubscriber extends EventDispatcher {
   update = (event?:Events) => {
     if(this.disabled === true) return;
     this.subscribers.forEach((subscriber) => {
-      console.log(this.subscribers);
       let isReactRender = subscriber.platform === Platforms.React;
       if(isReactRender) {
         if(subscriber.scope.context) subscriber.renderFunction.call(subscriber.scope);
@@ -46,7 +45,6 @@ export default class AtomSubscriber extends EventDispatcher {
         if(subscriber.scope) {
           subscriber.renderFunction.call(subscriber.scope, this);
         } else {
-          console.log('test');
           subscriber.renderFunction();
         }
       }
@@ -59,7 +57,6 @@ export default class AtomSubscriber extends EventDispatcher {
     if (!renderFunction) throw new Error("AtomX Error: Render function missing.");
     let exists = this.subscribers.filter((subscriber) => subscriber.renderFunction === renderFunction).length > 0;
     if (exists === false) {
-      console.log('ADDED');
       this.subscribers.push(new Subscriber(renderFunction, scope, platform));
     }
     return this;
