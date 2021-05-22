@@ -61,10 +61,8 @@ export default class AtomCollection<T> extends AtomSubscriber {
     this.values.push(new this.type(value))
   }
 
-  filter = (funcRef:Function) => {
-    // @ts-ignore
-    return this.values.filter(funcRef);
-  }
+  filter = this.values.filter.bind(this.values);
+  forEach = this.values.forEach.bind(this.values);
 
   remove = (value:T | any) => {
     for (let i = 0; i < this.length; i++) {

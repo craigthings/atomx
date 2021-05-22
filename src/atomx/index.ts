@@ -31,13 +31,17 @@ export function Subscriber<T extends Constructor>(Base: T) {
       this._renderFunc.bind(this);
     }
   
-    subscribe = (atomState:AtomSubscriber) => {
+    subscribe = (...args: AtomSubscriber[]) => {
+      args.forEach( state => this._subscribeSingle(state));
+    };
+
+    _subscribeSingle = (atomState:AtomSubscriber) => {
       let exists = this._subscribedStates.filter((item) => item === atomState).length > 0;
       if (exists === false) {
         this._subscribedStates.push(atomState);
       }
       atomState.subscribe(this._renderFunc, this, this._platform);
-    };
+    }
   
     unsubscribe = (atomState:AtomSubscriber) => {
       this._subscribedStates

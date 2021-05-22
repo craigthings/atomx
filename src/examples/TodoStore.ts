@@ -34,7 +34,7 @@ export class MainStore extends Store {
   filter = state<TodoStatus>(TodoStatus.NONE);
   filtered = computed<Array<TodoItem>>(this, () => {
     if(this.filter.get() === TodoStatus.NONE) return this.todos.get();
-    return this.todos.get().filter(todo => todo.status.get() === this.filter.get() );
+    return this.todos.filter(todo => todo.status.get() === this.filter.get() );
   });
 
   constructor() {
@@ -44,7 +44,6 @@ export class MainStore extends Store {
 
   addTodo = (name: string, completed = false) => {
     this.todos.add(new TodoItem(name, completed));
-    console.log(this.todos.filter(todo => todo.completed));
   };
 
   removeTodo = (item: TodoItem) => {

@@ -1,10 +1,28 @@
 # ⚛ AtomX (Alpha) - Predictable and Scalable Atomic State
 
-> This project is in an *Alpha* stage of development. We are looking for feedback and pull requests to make this better state management for more people.
+> Currently in ***Alpha*** stage of development. We are looking for feedback and pull requests to make this better state management for more people.
 
-State management is a problem that's relatively easy to solve with simple, and early stage web apps. But as apps grow in complexity, often state can start to behave unpredictably, or start becoming extremely verbose and hard to manage. Atomx is designed to be as straight forward as possible, while keeping state predictable and (more importantly) scalable. AtomX is designed to support  JavaScript and TypeScript using code structure that's intended to be familiar and IDE friendly.
+AtomX is a scalable atomic state based state management framework designed for React, but can work with any framework with a render function.
 
-AtomX is built on a principle that all state should be "atomic". To put it another way, all values are a single bit of state. Strings, numbers, or any other data. AtomX state can be created (and subscribed to) in any scope. Use a global store, or use state within a component.
+Core principles:
+
+ - **Scalable** - API simple enough for prototyping, explicit enough for large scale apps.
+ - **Familiar** - Built to allow syntax that is similar to other workflows and frameworks.
+ - **Predictable** - All changes to state are explicitly subscribed to, and directly changed.
+ - **Flexible** - Atomic state can be built into many different programming patterns and workflows.
+ - **Batteries Included** - Fully supports TypeScript and JavaScript, and includes many components and APIs to make managing atomic state easier in large scale apps.
+
+Core components:
+
+ - [**State**](#⚛-state) - A single atomic value that has a getter, setter, and is an event dispatcher.
+ - [**Store**](#🔒-store) - A container for multiple atomic states. It has a getter, setter, and is an event dispatcher.
+ - [**Collection**](#📚-collection) - A list-like structure containing atomic states, which also has a getter, setter, and is an event dispatcher.
+ - [**Subscribing**](#📬-subscribing) - All AtomX structures can be subscribed to, and have event listeners.
+ - [**Computed State**](#📚-computed-state) - State that's value is derived from changes to other state.
+
+<!-- State management is a problem that's relatively easy to solve with simple, and early stage web apps. But as apps grow in complexity, often state can start to behave unpredictably, or a codebase can start become extremely verbose and hard to manage. AtomX is designed to be as straight forward as possible, while keeping state predictable and (more importantly) scalable. AtomX is designed to support  JavaScript and TypeScript using code structure that's intended to be familiar and IDE friendly.
+
+AtomX is built on a principle that all state should be "atomic". To put it another way, all values are a single bit of state. Strings, numbers, or any other data. AtomX state can be created (and subscribed to) in any scope. Use a global store, or use state within a component. -->
 
 ## Installing
 
@@ -26,16 +44,18 @@ React based library:
 import { state, Subscriber } from "atomx-state";
 
 class CountExample extends Subscriber(React.Component) { // extend our component to support subscribing to atomic state.
+  label = state('My Counter');
   count = state(0); // create initial atomic state.
   
   increment = () => this.count.set(this.count.get() + 1); // action to add 1 to state.
 
   render() {
-    this.subscribe(this.count); // subscribe to the state so our component renders when the value is changed via .set()
+    this.subscribe(this.count, this.label); // subscribe to the state so our component renders when the value is changed via .set()
     let count = this.count.get(); // get and save the current value into a variable.
+    let label = this.label.get();
     return (
         <p>
-          Clicked: {count} times.
+          {label} Clicked: {count} times.
           <button onClick={this.increment}>+</button>
         </p>
     );
@@ -112,13 +132,13 @@ function increment(){
   count.set(count.get() +)
 }
 
-export default Store({count}) -->
+export default Store({count}) 
 
 ```
+-->
 
 ## Future features...
 
-- Functional component support.
 - Time travel
 - Debugger
 - Rehydration
@@ -127,9 +147,9 @@ export default Store({count}) -->
 
 > In progress...
 
-# API
+# **AtomX API**
 
-## ⚛ Atomx State 
+# ⚛ State 
 
 "State" is an piece of atomic state. It can be `get`, `set`, `subscribed` to, listened to (using `on` or `off`), and `dispatch`ed from. Sometimes you need your app to react to a specific event, and not just change based on what state you've subscribed to.
 
@@ -198,7 +218,7 @@ count.on('INCREMENT', countIncrementHandler);
 ```
 Dispatch an event from your state.
 
-## 🔒 Atomx Store
+# 🔒 Store
 
 A store is a way to contain and manage multiple atomic states and actions on those states. It is also an event dispatcher, and has some other convenience features. You could build your own version of this using the principles above of atomic state, but this is our "batteries included" API for storing all your state.
 
@@ -270,7 +290,7 @@ UserStore.on('LOGIN_SUCCESSFUL', userLoginHandler);
 ```
 Dispatch an event from your store.
 
-## 📚 Atomx Collection
+# 📚 Collection
 
 A `collection` stores a list of states. State can be added, removed, retrieved, and changed.
 
@@ -354,6 +374,15 @@ function collectionChangeHandler(collectionReference){
 ```
 Subscribe a handler to the collection that will be called when an item is added, removed, or changed.
 
+### `Collection.filter( filterFunction: (value: CollectionType, index: number, array: CollectionType[]) )`
+
+```javascript
+let completed = collection.filter( todo => todo.isCompleted.get() === true );
+```
+Returns a filtered array of results where the filter function returns true.
+
+
+
 ### `Collection.reset()`
 
 ```javascript
@@ -396,7 +425,7 @@ collection.on('LOAD_COMPLETE', loadHandler);
 ```
 Dispatch an event from your collection.
 
-## 📚 Atomx Computed State
+# 📚 Computed State
 
 The value of `Computed State` updates when any state within a referenced store changes.
 
@@ -477,7 +506,83 @@ collection.off(CollectionEvents.CHANGED, changeHandler);
 ```
 Remove an event listener from your computed state.
 
-## Testing
+# 📬 Subscribing
+
+## Subscriber Component
+
+### `Subscriber(Component: Class)`
+
+You can turn your component into a Subscriber so that it's easier to manage subscribing to state. 
+
+> Using a different framework's component? Make sure it contains either a `.forceUpdate` method or `.render` method.
+
+### `this.subscribe(stateReference: State | Store | Collection | Computed, stateReference, ...)`
+
+```javascript
+// In Class scope
+this.subscribe(count, title);
+```
+
+Subscribe to a single or multiple states. If either are changed, your component will be updated.
+
+### Example:
+
+```javascript
+class CountExample extends Subscriber(React.Component) {
+  count = state<number>(0);
+
+  componentWillUnmount = () => {
+    this.unsubscribeAll(); // Unsubscribe from all state you've subscribed to before unmounting.
+  }
+
+  render() {
+    this.subscribe(count); // Subscribe to your state.
+    return (
+      <div>
+          Clicked: {this.count.get()} times {' '}
+          <button onClick={this.increment}>+</button>{' '}
+      </div>
+    );
+  }
+}
+```
+
+## Subscribe Hook
+
+### `subscribe(stateReference: State | Store | Collection | Computed, stateReference, ...)`
+
+You can subscribe to state in your functional React component using the custom `subscribe` hook.
+
+```javascript
+// In Function scope
+subscribe(count, title);
+```
+
+Subscribe to a single or multiple states. If either are changed, your component will be updated.
+
+### Example:
+
+```javascript
+let count = state<number>(0);
+
+function Count() {
+  subscribe(count); // Subscribe to the state using the subscribe hook.
+
+  function increment() {
+    count.set(count.get() + 1);
+  }
+
+  return (
+    <div>
+        Clicked: {count.get()} times {' '}
+        <button onClick={increment}>+</button>{' '}
+    </div>
+  );
+}
+```
+
+
+# 🤖 Testing
 
 ```javascript
 test('counter', t => {
