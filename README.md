@@ -299,40 +299,70 @@ Example:
 ```javascript
 import { Store, state } from "atomx-state";
 
-class Counter extends Store {
-  count = state(0);
+class TodoItem extends Store {
+  name = state('');
+  completed = state(false);
   
-  constructor(initialValue) {
+  constructor(initialName) {
     super();
-    if(initialValue) count.set(initialValue);
+    if(initialName) this.name.set(initialName);
     this.init(); // initialize this store
   }
 
-  increment = () => {
-    this.count.set(this.count.get() + 1);
+  done = () => {
+    this.completed.set(true);
   }
 }
 
-export class MainStore extends Store {
-  counters = collection();
+export class Todo extends Store {
+  todos = collection();
 
   constructor() {
     super();
     this.init(); // initialize this store
   }
 
-  addCounter = () => {
-    let i = 10;
-    while(i--) {
-      this.counters.add(new Counter(i));
-    }
+  addTodo = (name: String) => {
+    this.counters.add(new TodoItem(name));
   };
-
-  incrementAll = () => {
-    this.counters.get().forEach(counter => counter.increment());
-  }
 }
 ```
+<details>
+  <summary>TypeScript Example</summary>
+
+  ```typescript
+import { Store, state } from "atomx-state";
+
+class TodoItem extends Store {
+  name = state<string>('');
+  completed = state<boolean>(false);
+  
+  constructor(initialName: boolean) {
+    super();
+    if(initialName) this.name.set(initialName);
+    this.init(); // initialize this store
+  }
+
+  done = () => {
+    this.completed.set(true);
+  }
+}
+
+export class Todo extends Store {
+  todos = collection<TodoItem>();
+
+  constructor() {
+    super();
+    this.init(); // initialize this store
+  }
+
+  addTodo = (name: String) => {
+    this.counters.add(new TodoItem(name));
+  };
+}
+  ```
+</details>
+
 
 ### `collection(value: any)`
 

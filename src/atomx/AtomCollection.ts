@@ -47,7 +47,7 @@ export default class AtomCollection<T> extends AtomSubscriber {
     }
 
     value.on(Events.CHANGED, this.handleChildUpdate);
-    value.parent = this;
+    value.setParent(this);
 
     this.values.push(value);
     this.update(Events.ADDED);
