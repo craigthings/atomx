@@ -89,11 +89,13 @@ export function store(newStore) {
 
 // TODO: find a way to make these functional component enabled features to work.
 
-export function subscribe(...args) {
-  const [state, setState] = React.useState(Math.random())
+export function subscribe(...args:AtomSubscriber[]) {
+  let states:AtomSubscriber[] = args.map(state => state['get']())
+  const [state, setState] = React.useState([ ... states ])
 
   function updateState() {
-    setState(Math.random())
+    let states:AtomSubscriber[] = args.map(state => state['get']())
+    setState([ ... states ])
   }
   
   React.useEffect(() => {
@@ -102,10 +104,6 @@ export function subscribe(...args) {
   });
 
   return args;
-}
-
-function subscribeSingle(target: any){
-  
 }
 
 // export function useState<T = any>(value:any) { //TODO: Find a way to store state in useState scope
