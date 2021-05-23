@@ -63,6 +63,7 @@ export default class AtomCollection<T> extends AtomSubscriber {
 
   filter = this.values.filter.bind(this.values);
   forEach = this.values.forEach.bind(this.values);
+  map = this.values.map.bind(this.values);
 
   remove = (value:T | any) => {
     for (let i = 0; i < this.length; i++) {
