@@ -43,16 +43,19 @@ React based library:
 ```jsx
 import { state, Subscriber } from "atomx-state";
 
-class CountExample extends Subscriber(React.Component) { // extend our component to support subscribing to atomic state.
+// extend our component to support subscribing to atomic state
+class CountExample extends Subscriber(React.Component) { 
+  // create initial atomic state
   name = state('My Counter');
-  count = state(0); // create initial atomic state.
+  count = state(0); 
   
-  increment = () => this.count.set(this.count.get() + 1); // action to add 1 to state.
+  increment = () => this.count.set(this.count.get() + 1); // action to add 1 to state
 
   render() {
-    this.subscribe(this.count, this.name); // subscribe to the state so our component renders when the value is changed via .set()
-    let count = this.count.get(); // get and save the current value into a variable.
-    let name = this.name.get();
+    this.subscribe(this.count, this.label); // subscribe to the state changes
+    // get and save the current value into variables
+    let count = this.count.get(); 
+    let label = this.label.get();
     return (
         <p>
           {name} Clicked: {count} times.
@@ -73,15 +76,18 @@ class CountExample extends Subscriber(React.Component) { // extend our component
   ```tsx
   import { state, Subscriber } from "atomx-state";
 
-  class CountExample extends Subscriber(React.Component) { // extend our component to support subscribing to atomic state.
+// extend our component to support subscribing to atomic state
+  class CountExample extends Subscriber(React.Component) { 
+    // create initial atomic state
     name = state<string>('My Counter');
-    count = state<number>(0); // create initial atomic state.
+    count = state<number>(0); 
     
-    increment = () => this.count.set(this.count.get() + 1); // action to add 1 to state.
+    increment = () => this.count.set(this.count.get() + 1); // action to add 1 to state
 
     render() {
-      this.subscribe(this.count, this.label); // subscribe to the state so our component renders when the value is changed via .set()
-      let count: number = this.count.get(); // get and save the current value into a variable.
+      this.subscribe(this.count, this.label); // subscribe to the state changes
+      // get and save the current value into variables
+      let count: number = this.count.get(); 
       let label: string = this.label.get();
       return (
           <p>
@@ -149,21 +155,25 @@ class CounterStore extends Store {
 
 ```jsx
 import { state, subscribe } from "atomx-state";
+// create initial atomic state.
+let count = state(0); 
+let name = state('My Counter');
 
-let count = state(0); // create initial atomic state.
-let label = state('My Counter');
-
-function CountExample { // extend our component to support subscribing to atomic state.
+function CountExample {
   
-  
-  let increment = () => count.set(count.get() + 1); // action to add 1 to state.
-  subscribe(count, label); // subscribe to the state so our component renders when the value is changed via .set()
+  let increment = () => count.set(count.get() + 1); // action to add 1 to state
+  subscribe(count, name); // subscribe to the state changes
 
   render() {
     return (
         <p>
-          {label.get()} Clicked: {count.get()} times.
+          {name.get()} Clicked: {count.get()} times.
           <button onClick={this.increment}>+</button>
+          <input 
+            type="text" 
+            value={ name.get() } 
+            onChange={ (e) => name.set(e.target.value) }
+          >
         </p>
     );
   }
@@ -174,21 +184,26 @@ function CountExample { // extend our component to support subscribing to atomic
 
   ```tsx
   import { state, subscribe } from "atomx-state";
-
-  let count = state<number>(0); // create initial atomic state.
+  // create initial atomic state.
+  let count = state<number>(0);
   let label = state<string>('My Counter');
 
-  function CountExample { // extend our component to support subscribing to atomic state.
+  function CountExample {
     
     
     let increment = () => count.set(count.get() + 1); // action to add 1 to state.
-    subscribe(count, label); // subscribe to the state so our component renders when the value is changed via .set()
+    subscribe(count, label); // subscribe to the state changes
 
     render() {
       return (
           <p>
             {label.get()} Clicked: {count.get()} times.
             <button onClick={this.increment}>+</button>
+            <input 
+              type="text" 
+              value={ name.get() } 
+              onChange={ (e) => name.set(e.target.value) }
+            >
           </p>
       );
     }
