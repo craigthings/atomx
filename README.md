@@ -52,10 +52,10 @@ class CountExample extends Subscriber(React.Component) {
   increment = () => this.count.set(this.count.get() + 1); // action to add 1 to state
 
   render() {
-    this.subscribe(this.count, this.label); // subscribe to the state changes
+    this.subscribe(this.count, this.name); // subscribe to the state changes
     // get and save the current value into variables
     let count = this.count.get(); 
-    let label = this.label.get();
+    let name = this.name.get();
     return (
         <p>
           {name} Clicked: {count} times.
@@ -85,10 +85,10 @@ class CountExample extends Subscriber(React.Component) {
     increment = () => this.count.set(this.count.get() + 1); // action to add 1 to state
 
     render() {
-      this.subscribe(this.count, this.label); // subscribe to the state changes
+      this.subscribe(this.count, this.name); // subscribe to the state changes
       // get and save the current value into variables
       let count: number = this.count.get(); 
-      let label: string = this.label.get();
+      let name: string = this.name.get();
       return (
           <p>
             {name} Clicked: {count} times.
@@ -112,6 +112,7 @@ import { Store, state } from "atomx-state";
 
 class CounterStore extends Store {
   count = state(0);
+  name = state('Unnamed Counter');
   
   constructor() {
     super();
@@ -120,6 +121,10 @@ class CounterStore extends Store {
 
   increment = () => {
     this.count.set(this.count.get() + 1);
+  }
+
+  setName = (name) => {
+    this.name.set(name);
   }
 }
 ```
@@ -186,18 +191,18 @@ function CountExample {
   import { state, subscribe } from "atomx-state";
   // create initial atomic state.
   let count = state<number>(0);
-  let label = state<string>('My Counter');
+  let name = state<string>('My Counter');
 
   function CountExample {
     
     
     let increment = () => count.set(count.get() + 1); // action to add 1 to state.
-    subscribe(count, label); // subscribe to the state changes
+    subscribe(count, name); // subscribe to the state changes
 
     render() {
       return (
           <p>
-            {label.get()} Clicked: {count.get()} times.
+            {name.get()} Clicked: {count.get()} times.
             <button onClick={this.increment}>+</button>
             <input 
               type="text" 
