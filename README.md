@@ -44,24 +44,60 @@ React based library:
 import { state, Subscriber } from "atomx-state";
 
 class CountExample extends Subscriber(React.Component) { // extend our component to support subscribing to atomic state.
-  label = state('My Counter');
+  name = state('My Counter');
   count = state(0); // create initial atomic state.
   
   increment = () => this.count.set(this.count.get() + 1); // action to add 1 to state.
 
   render() {
-    this.subscribe(this.count, this.label); // subscribe to the state so our component renders when the value is changed via .set()
+    this.subscribe(this.count, this.name); // subscribe to the state so our component renders when the value is changed via .set()
     let count = this.count.get(); // get and save the current value into a variable.
-    let label = this.label.get();
+    let name = this.name.get();
     return (
         <p>
-          {label} Clicked: {count} times.
+          {name} Clicked: {count} times.
           <button onClick={this.increment}>+</button>
+          <input 
+            type="text" 
+            value={ name.get() } 
+            onChange={ (e) => name.set(e.target.value) }
+          >
         </p>
     );
   }
 }
 ```
+<details>
+  <summary>TypeScript Example</summary>
+
+  ```tsx
+  import { state, Subscriber } from "atomx-state";
+
+  class CountExample extends Subscriber(React.Component) { // extend our component to support subscribing to atomic state.
+    name = state<string>('My Counter');
+    count = state<number>(0); // create initial atomic state.
+    
+    increment = () => this.count.set(this.count.get() + 1); // action to add 1 to state.
+
+    render() {
+      this.subscribe(this.count, this.label); // subscribe to the state so our component renders when the value is changed via .set()
+      let count: number = this.count.get(); // get and save the current value into a variable.
+      let label: string = this.label.get();
+      return (
+          <p>
+            {name} Clicked: {count} times.
+            <button onClick={this.increment}>+</button>
+            <input 
+              type="text" 
+              value={ name.get() } 
+              onChange={ (e) => name.set(e.target.value) }
+            >
+          </p>
+      );
+    }
+  }
+  ```
+</details>
 
 ### Global State:
 
@@ -81,6 +117,31 @@ class CounterStore extends Store {
   }
 }
 ```
+<details>
+  <summary>TypeScript Example</summary>
+
+  ```typescript
+  import { Store, state } from "atomx-state";
+
+  class CounterStore extends Store {
+    count = state<number>(0);
+    name = state<string>('Unnamed Counter');
+    
+    constructor() {
+      super();
+      this.init(); // initialize this store
+    }
+
+    increment = () => {
+      this.count.set(this.count.get() + 1);
+    }
+
+    setName = (name) => {
+      this.name.set(name);
+    }
+  }
+  ```
+</details>
 
 ## Using Functional Components
 
@@ -108,6 +169,32 @@ function CountExample { // extend our component to support subscribing to atomic
   }
 }
 ```
+<details>
+  <summary>TypeScript Example</summary>
+
+  ```tsx
+  import { state, subscribe } from "atomx-state";
+
+  let count = state<number>(0); // create initial atomic state.
+  let label = state<string>('My Counter');
+
+  function CountExample { // extend our component to support subscribing to atomic state.
+    
+    
+    let increment = () => count.set(count.get() + 1); // action to add 1 to state.
+    subscribe(count, label); // subscribe to the state so our component renders when the value is changed via .set()
+
+    render() {
+      return (
+          <p>
+            {label.get()} Clicked: {count.get()} times.
+            <button onClick={this.increment}>+</button>
+          </p>
+      );
+    }
+  }
+  ```
+</details>
 
 <!-- ### Global State:
 ```jsx
