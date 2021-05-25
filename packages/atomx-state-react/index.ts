@@ -1,17 +1,17 @@
 // import AtomSubscriber from '../atomx-state/AtomSubscriber';
-import React from 'react';
+import { useState, useEffect } from 'react'
 
 export function subscribe(...args:any[]) { // 'any[]' is likely to be AtomSubscriber[]
   // TODO: check if any[] is an AtomSubscriber.
   let states:any[] = args.map(state => state['get']())
-  const [state, setState] = React.useState([ ... states ])
+  const [state, setState] = useState([ ... states ])
 
   function updateState() {
     let states:any[] = args.map(state => state['get']())
     setState([ ... states ])
   }
   
-  React.useEffect(() => {
+  useEffect(() => {
     args.forEach(state => state.subscribe(updateState))
     return () => args.forEach(state => state.unsubscribe(updateState))
   });
