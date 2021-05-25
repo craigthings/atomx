@@ -1,0 +1,14 @@
+{
+  "name": "atomx-state",
+  "description": "Predictable and scalable atomic state management.",
+  "version": "0.0.1",
+  "author": "Craig Albert",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "typescript": "^4.2.3"
+  },
+  "scripts": {
+    "build": "tsc"
+  }
+}

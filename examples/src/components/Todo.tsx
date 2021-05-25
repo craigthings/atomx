@@ -1,7 +1,7 @@
 import "./Todo.css";
 import React from 'react';
 import store, { TodoStatus } from './TodoStore';
-import { state, Subscriber } from '../atomx';
+import { state, Subscriber } from '../../../packages/atomx-state'
 import { TodoItem } from './TodoStore'
 
 class TodoExample extends Subscriber(React.Component) {

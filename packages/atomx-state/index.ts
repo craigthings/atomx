@@ -3,7 +3,6 @@ import AtomComputed from './AtomComputed';
 import AtomStore from './AtomStore';
 import AtomState from './AtomState';
 import AtomSubscriber, { Platforms } from './AtomSubscriber';
-import React from 'react';
 
 import {
   AtomUID,
@@ -86,33 +85,6 @@ export function store(newStore) {
     return new AtomStore(newStore);
   }
 }
-
-// TODO: find a way to make these functional component enabled features to work.
-
-export function subscribe(...args:AtomSubscriber[]) {
-  let states:AtomSubscriber[] = args.map(state => state['get']())
-  const [state, setState] = React.useState([ ... states ])
-
-  function updateState() {
-    let states:AtomSubscriber[] = args.map(state => state['get']())
-    setState([ ... states ])
-  }
-  
-  React.useEffect(() => {
-    args.forEach(state => state.subscribe(updateState))
-    return () => args.forEach(state => state.unsubscribe(updateState))
-  });
-
-  return args;
-}
-
-// export function useState<T = any>(value:any) { //TODO: Find a way to store state in useState scope
-//   let state = new AtomState<T>(value);
-//   // @ts-ignore
-//   let functionalRender = React.useReducer(() => ({}))[1];
-//   state.subscribe(functionalRender);
-//   return state;
-// }
 
 export const Store = AtomStore;
 export const State = AtomState;
