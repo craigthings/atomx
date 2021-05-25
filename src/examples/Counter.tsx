@@ -1,33 +1,9 @@
 import "./Counter.css";
-import Atom from "../atomx";
-import AtomComponent from "../atomx-react/AtomComponent";
 import React from 'react';
-import { state, Subscriber } from "../atomx";
-
-// class MainStore extends Atom.Store {
-//   count = state<number>(0);
-
-//   increment = () => {
-//     this.count.set(this.count.get() + 1);
-//   }
-//   decrement = () => {
-//     this.count.set(this.count.get() - 1);
-//   }
-// }
-
-// let store = new MainStore();
+import { Subscriber, state } from "../atomx";
 
 class CountExample extends Subscriber(React.Component) {
   count = state<number>(0);
-  // state = {
-  //   count: 0
-  // }
-
-  // componentDidMount = () => {
-  //   this.count.subscribe( state => {
-  //     this.setState({count:state.get()})
-  //   });
-  // }
 
   increment = () => {
     this.count.set(this.count.get() + 1);
@@ -62,5 +38,44 @@ class CountExample extends Subscriber(React.Component) {
     );
   }
 }
+
+
+// Functional Component Example
+
+// import { subscribe, state } from "../atomx";
+// let count = state<number>(0);
+
+// function CountExample() {
+//   subscribe(count);
+
+//   function increment() {
+//     count.set(count.get() + 1);
+//   }
+//   function decrement() {
+//     count.set(count.get() - 1);
+//   }
+
+//   function incrementIfOdd() {
+//     if (count.get() % 2 !== 0) {
+//       increment();
+//     }
+//   }
+
+//   function incrementAsync() {
+//     setTimeout(increment, 1000)
+//   }
+
+//   return (
+//     <div className="counter-example">
+//       <p>
+//         Clicked: {count.get()} times {' '}
+//         <button onClick={increment}>+</button>{' '}
+//         <button onClick={decrement}>-</button>{' '}
+//         <button onClick={incrementIfOdd}>Increment if odd</button>{' '}
+//         <button onClick={incrementAsync}>Increment async</button>
+//       </p>
+//     </div>
+//   );
+// }
 
 export default CountExample;

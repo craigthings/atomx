@@ -1,10 +1,10 @@
 import "./Todo.css";
-import AtomComponent from "../atomx-react/AtomComponent";
+import React from 'react';
 import store, { TodoStatus } from './TodoStore';
-import { state } from '../atomx';
+import { state, Subscriber } from '../atomx';
 import { TodoItem } from './TodoStore'
 
-class TodoExample extends AtomComponent {
+class TodoExample extends Subscriber(React.Component) {
   componentDidMount = () => {
     this.subscribe(store);
   }
@@ -34,7 +34,7 @@ class TodoExample extends AtomComponent {
 
 window['store'] = store;
 
-class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
+class TodoRow extends Subscriber(React.Component)<{ todo: TodoItem, removeTodo: Function }>{
 
   componentWillUnmount = () => {
     this.unsubscribeAll();
@@ -74,7 +74,7 @@ class TodoRow extends AtomComponent<{ todo: TodoItem, removeTodo: Function }>{
   }
 }
 
-class TodoForm extends AtomComponent<{
+class TodoForm extends Subscriber(React.Component)<{
   addTodo: Function;
 }> {
   name = state<string>("");

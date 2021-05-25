@@ -1,7 +1,16 @@
 import AtomCollection from './AtomCollection';
-import Events from './AtomEvents';
 import AtomStore from './AtomStore';
 import AtomSubscriber from './AtomSubscriber';
+import {
+  AtomUID,
+  AtomBoolean,
+  AtomString,
+  AtomNumber
+} from './AtomStateTypes';
+
+export enum Events {
+  CHANGED = "changed"
+};
 
 class Subscriber {
   renderFunction: Function;

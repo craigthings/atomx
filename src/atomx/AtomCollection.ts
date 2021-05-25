@@ -1,7 +1,12 @@
 import AtomState from './AtomState';
 import AtomSubscriber from './AtomSubscriber';
 import AtomStore from './AtomStore';
-import Events from './AtomEvents';
+
+export enum Events {
+  CHANGED = "changed",
+  ADDED = "added",
+  REMOVED = "removed",
+};
 
 export default class AtomCollection<T> extends AtomSubscriber {
   type:any;
@@ -42,7 +47,7 @@ export default class AtomCollection<T> extends AtomSubscriber {
     }
 
     value.on(Events.CHANGED, this.handleChildUpdate);
-    value.parent = this;
+    value.setParent(this);
 
     this.values.push(value);
     this.update(Events.ADDED);
@@ -55,6 +60,10 @@ export default class AtomCollection<T> extends AtomSubscriber {
   new = (value: AtomStore | AtomState<T>) => {
     this.values.push(new this.type(value))
   }
+
+  filter = this.values.filter.bind(this.values);
+  forEach = this.values.forEach.bind(this.values);
+  map = this.values.map.bind(this.values);
 
   remove = (value:T | any) => {
     for (let i = 0; i < this.length; i++) {

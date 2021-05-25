@@ -3,6 +3,7 @@ import AtomComputed from './AtomComputed';
 import AtomStore from './AtomStore';
 import AtomState from './AtomState';
 import AtomSubscriber, { Platforms } from './AtomSubscriber';
+import React from 'react';
 
 import {
   AtomUID,
@@ -30,13 +31,17 @@ export function Subscriber<T extends Constructor>(Base: T) {
       this._renderFunc.bind(this);
     }
   
-    subscribe = (atomState:AtomSubscriber) => {
+    subscribe = (...args: AtomSubscriber[]) => {
+      args.forEach( state => this._subscribeSingle(state));
+    };
+
+    _subscribeSingle = (atomState:AtomSubscriber) => {
       let exists = this._subscribedStates.filter((item) => item === atomState).length > 0;
       if (exists === false) {
         this._subscribedStates.push(atomState);
       }
       atomState.subscribe(this._renderFunc, this, this._platform);
-    };
+    }
   
     unsubscribe = (atomState:AtomSubscriber) => {
       this._subscribedStates
@@ -84,26 +89,41 @@ export function store(newStore) {
 
 // TODO: find a way to make these functional component enabled features to work.
 
-// export function subscribe(atomValue) {
-//   const api = {
-//     forceUpdate: () => {}
-//   };
-//   api.forceUpdate = React.useReducer(() => ({}))[1];
-//   atomValue.subscribe(api);
-//   return api;
+export function subscribe(...args:AtomSubscriber[]) {
+  let states:AtomSubscriber[] = args.map(state => state['get']())
+  const [state, setState] = React.useState([ ... states ])
+
+  function updateState() {
+    let states:AtomSubscriber[] = args.map(state => state['get']())
+    setState([ ... states ])
+  }
+  
+  React.useEffect(() => {
+    args.forEach(state => state.subscribe(updateState))
+    return () => args.forEach(state => state.unsubscribe(updateState))
+  });
+
+  return args;
+}
+
+// export function useState<T = any>(value:any) { //TODO: Find a way to store state in useState scope
+//   let state = new AtomState<T>(value);
+//   // @ts-ignore
+//   let functionalRender = React.useReducer(() => ({}))[1];
+//   state.subscribe(functionalRender);
+//   return state;
 // }
 
-// export function withAtomX() {
-//   const api = {
-//     forceUpdate: () => {},
-//     subscribe: (atomValue) => {},
-//   };
-//   api.forceUpdate = React.useReducer(() => ({}))[1];
-//   api.subscribe = function (atomValue) {
-//     atomValue.subscribe(api);
-//   };
-//   return api;
-// }
+export const Store = AtomStore;
+export const State = AtomState;
+export const Computed = AtomComputed;
+export const Collection = AtomCollection;
+export const Types = {
+  UID: AtomUID,
+  Boolean: AtomBoolean,
+  String: AtomString,
+  Number: AtomNumber
+}
 
 export default {
   Store: AtomStore,

@@ -42,7 +42,11 @@ export default class AtomSubscriber extends EventDispatcher {
         if(subscriber.scope.context) subscriber.renderFunction.call(subscriber.scope);
       }
       else {
-        subscriber.renderFunction.call(subscriber.scope, this);
+        if(subscriber.scope) {
+          subscriber.renderFunction.call(subscriber.scope, this);
+        } else {
+          subscriber.renderFunction();
+        }
       }
     });
     if(event) this.dispatch(event, this);

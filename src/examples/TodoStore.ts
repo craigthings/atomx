@@ -1,7 +1,12 @@
-import Atom from "../atomx";
-import { uid, state, computed, collection } from "../atomx";
+import { Store, uid, state, computed, collection } from "../atomx";
 
-export class TodoItem extends Atom.Store {
+export enum TodoStatus {
+  NONE = 'none',
+  COMPLETED = 'completed',
+  ACTIVE = 'active'
+}
+
+export class TodoItem extends Store {
   name = state<string>("");
   isCompleted = state<boolean>(false);
   isEditing = state<boolean>(false);
@@ -23,19 +28,13 @@ export class TodoItem extends Atom.Store {
   }
 }
 
-export enum TodoStatus {
-  NONE = 'none',
-  COMPLETED = 'completed',
-  ACTIVE = 'active'
-}
-
-export class MainStore extends Atom.Store {
+export class MainStore extends Store {
   title = state<string>("My Todos");
   todos = collection<TodoItem>();
   filter = state<TodoStatus>(TodoStatus.NONE);
   filtered = computed<Array<TodoItem>>(this, () => {
     if(this.filter.get() === TodoStatus.NONE) return this.todos.get();
-    return this.todos.get().filter(todo => todo.status.get() === this.filter.get() );
+    return this.todos.filter(todo => todo.status.get() === this.filter.get() );
   });
 
   constructor() {
