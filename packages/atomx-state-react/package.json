@@ -1,5 +1,5 @@
 {
-  "name": "atomx-state",
+  "name": "atomx-state-react",
   "description": "Predictable and scalable atomic state management.",
   "version": "0.0.1",
   "author": "Craig Albert",

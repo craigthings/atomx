@@ -1,9 +1,6 @@
 {
-  "name": "atomx",
-  "version": "0.1.0",
-  "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "name": "atomx-examples",
+  "version": "0.0.1",
   "dependencies": {
     "@craco/craco": "^6.1.1",
     "@testing-library/jest-dom": "^5.11.10",
@@ -13,6 +10,8 @@
     "@types/node": "^12.20.7",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
+    "atomx-state": "^0.0.1",
+    "atomx-state-react": "^0.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
