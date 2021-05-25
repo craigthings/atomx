@@ -269,7 +269,7 @@ export default Store({count})
 count = state(0);
 
 // TypeScript
-count = state<Number>(0);
+count = state<number>(0);
 ```
 Create a new instance of state;
 
@@ -726,7 +726,7 @@ test('counter', t => {
   let store = new CounterStore();
   t.assert(store.count.get() === 0);
 
-  increment();
+  store.increment();
   t.assert(store.count.get() === 1);
 
   t.end();
