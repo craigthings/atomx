@@ -1,4 +1,4 @@
-import { Store, uid, state, computed, collection } from "../dist/atomx-state";
+import { Store, uid, state, computed, collection } from "atomx-state";
 
 export enum TodoStatus {
   NONE = 'none',

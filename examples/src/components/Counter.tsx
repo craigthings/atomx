@@ -1,6 +1,6 @@
 import "./Counter.css";
 import React from 'react';
-import { Subscriber, state } from '../dist/atomx-state';
+import { Subscriber, state } from 'atomx-state';
 
 class CountExample extends Subscriber(React.Component) {
   count = state<number>(0);
@@ -42,7 +42,8 @@ class CountExample extends Subscriber(React.Component) {
 
 // Functional Component Example
 
-// import { subscribe, state } from "../atomx";
+// import { state } from "atomx-state";
+// import { subscribe } from "atomx-state-react";
 // let count = state<number>(0);
 
 // function CountExample() {
