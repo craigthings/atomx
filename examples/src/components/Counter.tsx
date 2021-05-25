@@ -1,6 +1,6 @@
 import "./Counter.css";
 import React from 'react';
-import { Subscriber, state } from "../atomx";
+import { Subscriber, state } from '../dist/atomx-state';
 
 class CountExample extends Subscriber(React.Component) {
   count = state<number>(0);

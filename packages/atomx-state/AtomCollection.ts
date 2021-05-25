@@ -14,7 +14,7 @@ export default class AtomCollection<T> extends AtomSubscriber {
   private defaultValues: Array<T> = [];
   //private defaultArgs = [];
 
-  constructor(values?:Array<T>, type?:T, ...args: any) {
+  constructor(values?:Array<T>, type?:T, /*...args: any*/) {
     super();
     if (type) this.type = type;
     if(values) {

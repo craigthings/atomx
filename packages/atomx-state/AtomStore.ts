@@ -66,7 +66,7 @@ export default class AtomStore extends AtomSubscriber {
       }
     }
 
-    updateStore = (value) => {
+    updateStore = (/*value*/) => {
       this.update();
     };
   
