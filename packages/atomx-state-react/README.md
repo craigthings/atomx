@@ -20,7 +20,7 @@ Core components:
  - [**Subscribing**](#📬-subscribing) - All AtomX structures can be subscribed to, and have event listeners.
  - [**Computed State**](#📚-computed-state) - State that's value is derived from changes to other state.
 
-<!-- State management is a problem that's relatively easy to solve with simple, and early stage web apps. But as apps grow in complexity, often state can start to behave unpredictably, or a codebase can start become extremely verbose and hard to manage. AtomX is designed to be as straight forward as possible, while keeping state predictable and (more importantly) scalable. AtomX is designed to support  JavaScript and TypeScript using code structure that's intended to be familiar and IDE friendly.
+<!-- State management is a problem that's relatively easy to solve with simple, and early stage web apps. But as apps grow in complexity, often state can start to behave unpredictably, or a codebase can start to become extremely verbose and hard to manage. AtomX is designed to be as straightforward as possible, while keeping state predictable and (more importantly) scalable. AtomX is designed to support  JavaScript and TypeScript using code structure that's intended to be familiar and IDE friendly.
 
 AtomX is built on a principle that all state should be "atomic". To put it another way, all values are a single bit of state. Strings, numbers, or any other data. AtomX state can be created (and subscribed to) in any scope. Use a global store, or use state within a component. -->
 
@@ -159,7 +159,8 @@ class CounterStore extends Store {
 ### Component State:
 
 ```jsx
-import { state, subscribe } from "atomx-state";
+import { state } from "atomx-state";
+import { subscribe } from "atomx-state-react";
 // create initial atomic state.
 let count = state(0); 
 let name = state('My Counter');
@@ -258,7 +259,7 @@ export default Store({count})
 
 # ⚛ State 
 
-"State" is an piece of atomic state. It can be `get`, `set`, `subscribed` to, listened to (using `on` or `off`), and `dispatch`ed from. Sometimes you need your app to react to a specific event, and not just change based on what state you've subscribed to.
+"State" is a piece of atomic state. It can be `get`, `set`, `subscribed` to, listened to (using `on` or `off`), and `dispatch`ed from. Sometimes you need your app to react to a specific event, and not just change based on what state you've subscribed to.
 
 ### `state(value: any)`
 
@@ -397,6 +398,14 @@ UserStore.on('LOGIN_SUCCESSFUL', userLoginHandler);
 ```
 Dispatch an event from your store.
 
+### `Store.init()`
+
+```javascript
+Store.get(); // { count: 0 };
+```
+
+Usually called in the constructor of a new store. This initializes the store, making sure that all state in the store is subscribed to.
+
 # 📚 Collection
 
 A `collection` stores a list of states. State can be added, removed, retrieved, and changed.
@@ -525,7 +534,7 @@ Returns a filtered array of results where the filter function returns true.
 ```javascript
 collection.reset();
 ```
-Resets the collection to it's inital state, even if that's empty.
+Resets the collection to its initial state, even if that's empty.
 
 ### `Collection.on(eventName: string, payload: any)`
 
