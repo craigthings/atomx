@@ -674,6 +674,8 @@ Subscribe to a single or multiple states. If either are changed, your component 
 ### Example:
 
 ```javascript
+import myGlobalStore from './stores/myGlobalStore';
+
 class CountExample extends Subscriber(React.Component) {
   count = state<number>(0);
 
@@ -682,9 +684,10 @@ class CountExample extends Subscriber(React.Component) {
   }
 
   render() {
-    this.subscribe(count); // Subscribe to your state.
+    this.subscribe(count, myGlobalStore); // Subscribe to your state.
     return (
       <div>
+          <h1>{myGlobalStore.title.get()}</h1>
           Clicked: {this.count.get()} times {' '}
           <button onClick={this.increment}>+</button>{' '}
       </div>
@@ -709,10 +712,12 @@ Subscribe to a single or multiple states. If either are changed, your component 
 ### Example:
 
 ```javascript
+import myGlobalStore from './stores/myGlobalStore';
+
 let count = state<number>(0);
 
 function Count() {
-  subscribe(count); // Subscribe to the state using the subscribe hook.
+  subscribe(count, myGlobalStore); // Subscribe to the state using the subscribe hook.
 
   function increment() {
     count.set(count.get() + 1);
@@ -720,7 +725,8 @@ function Count() {
 
   return (
     <div>
-        Clicked: {count.get()} times {' '}
+        <h1>{myGlobalStore.title.get()}</h1>
+        <p>Clicked: {count.get()} times {' '}<p>
         <button onClick={increment}>+</button>{' '}
     </div>
   );
