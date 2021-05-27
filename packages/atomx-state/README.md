@@ -127,6 +127,8 @@ class CounterStore extends Store {
     this.name.set(name);
   }
 }
+
+export default new CounterStore();
 ```
 <details>
   <summary>TypeScript Example</summary>
@@ -334,7 +336,7 @@ Dispatch an event from your state.
 
 # 🔒 Store
 
-A store is a way to contain and manage multiple atomic states and actions on those states. It is also an event dispatcher, and has some other convenience features. You could build your own version of this using the principles above of atomic state, but this is our "batteries included" API for storing all your state.
+A store is a way to contain and manage multiple atomic states and actions on those states. A store, when initialized, subscribes to all state within it. It is also an event dispatcher, and has some other convenience features. You could build your own version of this using the principles above of atomic state, but this is our "batteries included" API for storing all your state.
 
 The examples below assume this global state matches the counter example found near the beginning of the document.
 
