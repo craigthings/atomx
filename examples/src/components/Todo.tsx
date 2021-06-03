@@ -18,7 +18,7 @@ class TodoExample extends Subscriber(React.Component) {
             <TodoRow 
               key={todo.id.get()} 
               todo={todo} 
-              removeTodo={store.removeTodo} 
+              removeTodo={store.removeTodo}
             />
           ))}
           <TodoForm addTodo={store.addTodo} />

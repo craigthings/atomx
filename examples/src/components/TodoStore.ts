@@ -7,14 +7,14 @@ export enum TodoStatus {
 }
 
 export class TodoItem extends Store {
-  name = state<string>("");
-  isCompleted = state<boolean>(false);
-  isEditing = state<boolean>(false);
+  name = state("");
+  isCompleted = state(false);
+  isEditing = state(false);
   id = uid();
-  status = computed<TodoStatus>(this, () => {
+  status = computed<TodoItem>(this, () => {
     if (this.isCompleted.get()) return TodoStatus.COMPLETED;
     else return TodoStatus.ACTIVE
-  });
+  }); 
 
   constructor(name: string, isCompleted: boolean) {
     super();
