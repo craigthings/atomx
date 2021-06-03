@@ -11,7 +11,6 @@ class TodoExample extends Subscriber(React.Component) {
   
   render() {
     let todos = store.filtered.get();
-    
     return (
       <div className="todo-example">
         <div className="todo-list">

@@ -1,3 +1,3 @@
 // alias to make imports in examples shorter
 
-export { subscribe } from "../../packages/atomx-state-react";
+export { subscribe } from "../../packages/atomx-state-react/index";

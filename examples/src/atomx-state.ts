@@ -12,4 +12,4 @@ export {
     state, 
     store,
     uid
-} from "../../packages/atomx-state";
+} from "../../packages/atomx-state/index";
