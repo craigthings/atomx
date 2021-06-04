@@ -2,7 +2,8 @@ import AtomCollection from './AtomCollection';
 import AtomComputed from './AtomComputed';
 import AtomStore from './AtomStore';
 import AtomState from './AtomState';
-import AtomSubscriber, { Platforms } from './AtomSubscriber';
+import AtomComponent from './AtomComponent';
+import AtomSubscriber from './AtomSubscriber';
 
 import {
   AtomUID,
@@ -14,42 +15,35 @@ import {
 type Constructor = new (...args: any[]) => {}
 
 export function Subscriber<T extends Constructor>(Base: T) {
-  return class Subscribing extends Base {
-    _subscribedStates:Array<AtomSubscriber> = [];
-    _renderFunc:Function = ()=>{}
-    _platform:Platforms = Platforms.None;
+  return class extends Base {
+    private subscribedStates:Array<AtomSubscriber> = [];
+    private renderFunc:Function = () => {}
 
     constructor(...args: any[]){
       super(...args);
 
-      if(this["forceUpdate"]) {
-        this._renderFunc = this["forceUpdate"];
-        this._platform = Platforms.React;
-      }
-      else if(this["render"]) this._renderFunc = this["render"];
-      this._renderFunc.bind(this);
+      if(this["forceUpdate"]) this.renderFunc = this["forceUpdate"];
+      else if(this["render"]) this.renderFunc = this["render"]
+      this.renderFunc.bind(this);
     }
   
-    subscribe = (...args: AtomSubscriber[]) => {
-      args.forEach( state => this._subscribeSingle(state));
-    };
-
-    _subscribeSingle = (atomState:AtomSubscriber) => {
-      let exists = this._subscribedStates.filter((item) => item === atomState).length > 0;
+    subscribe = (atomState:AtomSubscriber) => {
+      let exists = this.subscribedStates.filter((item) => item === atomState).length > 0;
       if (exists === false) {
-        this._subscribedStates.push(atomState);
+        this.subscribedStates.push(atomState);
       }
-      atomState.subscribe(this._renderFunc, this, this._platform);
-    }
+      let renderFunc:Function = () => {};
+      atomState.subscribe(renderFunc, this);
+    };
   
     unsubscribe = (atomState:AtomSubscriber) => {
-      this._subscribedStates
+      this.subscribedStates
         .filter((subscribedAtomState) => subscribedAtomState === atomState)
-        .forEach((subscribedAtomState) => subscribedAtomState.unsubscribe(this._renderFunc));
+        .forEach((subscribedAtomState) => subscribedAtomState.unsubscribe(this.renderFunc));
     };
   
     unsubscribeAll = () => {
-      this._subscribedStates.forEach((subscribedAtomState) => subscribedAtomState.unsubscribe(this._renderFunc));
+      this.subscribedStates.forEach((subscribedAtomState) => subscribedAtomState.unsubscribe(this.renderFunc));
     };
   }
 }
@@ -64,7 +58,7 @@ export function collection<T = any>(defaultValue?:Array<T>) {
   return newCollection;
 }
 
-export function computed<T = any>(store:any, func:Function) {
+export function computed<T = any>(store:AtomStore, func:Function) {
   let newComputed:AtomComputed<T> = new AtomComputed(store, func);
   return newComputed;
 }
@@ -86,20 +80,33 @@ export function store(newStore) {
   }
 }
 
-export const Store = AtomStore;
-export const State = AtomState;
-export const Computed = AtomComputed;
-export const Collection = AtomCollection;
-export const Types = {
-  UID: AtomUID,
-  Boolean: AtomBoolean,
-  String: AtomString,
-  Number: AtomNumber
+// TODO: find a way to make these functional component enabled features to work.
+
+export function subscribe(atomValue: AtomSubscriber | any[]) {
+  const api = {
+    forceUpdate: () => {}
+  };
+  // @ts-ignore: 
+  api.forceUpdate = React.useReducer(() => ({}))[1];
+  atomValue.subscribe(api);
+  return api;
 }
+
+// export function useAtom() {
+//   const api = {
+//     forceUpdate: () => {},
+//     subscribe: (atomValue) => {},
+//   };
+//   api.forceUpdate = React.useReducer(() => ({}))[1];
+//   api.subscribe = function (atomValue) {
+//     atomValue.subscribe(api);
+//   };
+//   return api;
+// }
 
 export default {
   Store: AtomStore,
-  // Component: AtomComponent,
+  Component: AtomComponent,
   State: AtomState,
   UID: AtomUID,
   Computed: AtomComputed,

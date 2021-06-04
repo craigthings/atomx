@@ -10,7 +10,7 @@
       "stripInternal": true,
       "jsx": "preserve",
       "outDir": "dist",
-      "lib": [ "es2015", "dom"]
+      "lib": [ "es2019", "dom"]
   },
   "files": [
       "index.ts"

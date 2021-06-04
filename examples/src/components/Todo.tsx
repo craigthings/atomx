@@ -1,7 +1,7 @@
 import "./Todo.css";
 import React from 'react';
 import store, { TodoStatus } from './TodoStore';
-import { state, Subscriber } from '../atomx-state';
+import { state, Subscriber } from 'atomx-state';
 import { TodoItem } from './TodoStore'
 
 class TodoExample extends Subscriber(React.Component) {
@@ -11,7 +11,6 @@ class TodoExample extends Subscriber(React.Component) {
   
   render() {
     let todos = store.filtered.get();
-    
     return (
       <div className="todo-example">
         <div className="todo-list">
@@ -19,7 +18,7 @@ class TodoExample extends Subscriber(React.Component) {
             <TodoRow 
               key={todo.id.get()} 
               todo={todo} 
-              removeTodo={store.removeTodo} 
+              removeTodo={store.removeTodo}
             />
           ))}
           <TodoForm addTodo={store.addTodo} />
