@@ -22,7 +22,7 @@ class Subscriber {
 
 export default class AtomSubscriber extends EventDispatcher {
   subscribers: Array<Subscriber> = [];
-  parent:any = null;
+  parent:AtomSubscriber = null;
   // TODO: need to properly set _parent type
   private disabled:Boolean = false;
 

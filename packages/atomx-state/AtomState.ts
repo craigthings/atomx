@@ -34,7 +34,7 @@ export default class AtomState<T = any> extends AtomSubscriber {
     return this.value;
   };
 
-  set = (value: T):AtomState => {
+  set = (value: T): this => {
     if (this.value === value) return this;
     this.value = value;
     this.update();

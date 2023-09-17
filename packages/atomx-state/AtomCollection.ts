@@ -8,7 +8,7 @@ export enum Events {
   REMOVED = "removed",
 };
 
-export default class AtomCollection<T> extends AtomSubscriber {
+export default class AtomCollection<T> extends AtomState<Array<T>> {
   type:any;
   values: Array<T> = [];
   private defaultValues: Array<T> = [];
@@ -25,10 +25,11 @@ export default class AtomCollection<T> extends AtomSubscriber {
     }
   }
 
-  set = (values:Array<T>) => {
+  set = (values:Array<T>): this => {
     values.forEach(value => {
       this.values.push(value);
     })
+    return this;
   }
 
   get = ():Array<T> => {
@@ -57,7 +58,7 @@ export default class AtomCollection<T> extends AtomSubscriber {
     this.dispatch(Events.CHANGED, e);
   }
 
-  new = (value: AtomStore | AtomState<T>) => {
+  new = (value: AtomStore<T> | AtomState<T>) => {
     this.values.push(new this.type(value))
   }
 
@@ -77,6 +78,7 @@ export default class AtomCollection<T> extends AtomSubscriber {
 
   reset = () => {
     this.values = [ ... this.defaultValues ]
+    return this;
   }
 
   onAdded = (callback: Function) => { this.on(Events.ADDED, callback) }

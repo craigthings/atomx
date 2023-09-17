@@ -10,26 +10,13 @@ export enum Events {
   CHANGED = "changed"
 };
 
-type UnwrapState<S> = S extends AtomState<infer T>
-  ? T : S extends AtomComputed<infer T>
-  ? T : S extends AtomCollection<infer T>
-  ? T : never;
-
-// type for not filtering any types out.
-// type UnwrapStateOrPassthrough<S> = S extends AtomState<infer T> ? T : S;
-
-type StateKeys<T> = {
-  [P in keyof T]: T[P] extends AtomState<infer _>
-  ? P : T[P] extends AtomComputed<infer _>
-  ? P : T[P] extends AtomCollection<infer _>
-  ? P : never;
-}[keyof T];
-
-type UnwrapStateProperties<S> = {
-  [Property in StateKeys<S>]: UnwrapState<S[Property]>;
+type FilteredState<T> = {
+  [K in keyof T as T[K] extends AtomState<infer _> ? K : never]: T[K] extends AtomState<infer _>
+    ? ReturnType<T[K]['get']>
+    : never;
 };
 
-export default class AtomStore extends AtomSubscriber {
+export default class AtomStore<T> extends AtomSubscriber {
   private initialized = false;
   // private computed:Array<AtomComputed<any>> = [];
   // private functional = false;
@@ -55,32 +42,21 @@ export default class AtomStore extends AtomSubscriber {
     return this;
   };
 
-  get = (): UnwrapStateProperties<this> => {
-    let instance = this;
-    let items: [string, typeof AtomSubscriber][] = Object.entries(instance)
-      .filter(([key, value]) => {
-        return value instanceof AtomState ||
-          value instanceof AtomCollection ||
-          value instanceof AtomComputed;
-      })
-      .map(([key, value]) => {
-        return [key, value.get()];
-      });
+  get(): FilteredState<T>{
+    const result = {} as FilteredState<T>;
+    for (const [key, val] of Object.entries(this)) {
+      if (val instanceof AtomState) result[key as keyof typeof result] = val.get();
+    }
+    return result;
+}
 
-    return Object.fromEntries(items) as UnwrapStateProperties<this>;
-  };
-
-  set = (states: UnwrapStateProperties<this> | {}) => {
-    let instance = this;
-    for (let key in Object(states)) {
-      let value = Object(states)[key];
-      if (
-        Object(instance)[key] &&
-        (Object(instance)[key] instanceof AtomState ||
-          Object(instance)[key] instanceof AtomCollection ||
-          Object(instance)[key] instanceof AtomComputed)
-      ) {
-        Object(instance)[key].set(value);
+  set = (states: Partial<FilteredState<T>>) => {
+    for (const [key, val] of Object.entries(states)) {
+      if (this.hasOwnProperty(key)) {
+        const state = this[key];
+        if (state instanceof AtomState) state.set(val);
+      } else {
+        throw new Error(`Property ${key} does not exist on this AtomStore`);
       }
     }
   };

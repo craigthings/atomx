@@ -54,17 +54,17 @@ export function Subscriber<T extends Constructor>(Base: T) {
   }
 }
 
-export function state<T = any>(defaultValue?:T) {
+export function state<T>(defaultValue?:T) {
   let newState:AtomState<T> = new AtomState(defaultValue);
   return newState;
 }
 
-export function collection<T = any>(defaultValue?:Array<T>) {
+export function collection<T>(defaultValue?:Array<T>) {
   let newCollection:AtomCollection<T> = new AtomCollection(defaultValue);
   return newCollection;
 }
 
-export function computed<T = any>(store:any, func:Function) {
+export function computed<T>(store:any, func:Function) {
   let newComputed:AtomComputed<T> = new AtomComputed(store, func);
   return newComputed;
 }
